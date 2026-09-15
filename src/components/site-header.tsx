@@ -22,9 +22,7 @@ export function SiteHeader() {
       <nav className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="flex h-16 items-center gap-5">
           <Link href="/" onClick={closeMenu} className="group flex min-w-0 items-center gap-3" aria-label="GESS home">
-            <span className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-topo/60 bg-topo/15 shadow-[0_0_18px_rgba(123,198,53,.22)]">
-              <Image alt="GESS logo" className="object-cover" fill priority sizes="44px" src="/GESS_Logo.jpg" />
-            </span>
+            <Image src="/GESS_Logo.jpg" alt="GESS Logo" width={44} height={44} priority className="h-11 w-11 shrink-0 rounded-full border border-[#7BC635] object-cover shadow-[0_0_18px_rgba(123,198,53,.22)]" />
             <span className="min-w-0">
               <span className="block font-display text-lg font-bold leading-none">GESS</span>
               <span className="mt-1 block truncate text-[9px] font-bold tracking-[.12em] text-topo sm:text-[10px]">GEODETIC ENGINEERING STUDENTS SOCIETY</span>
