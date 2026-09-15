@@ -1,0 +1,53 @@
+# Local source control, dependencies, and build artefacts
+.git/
+.gitignore
+.gitattributes
+node_modules/
+.next/
+dist/
+build/
+.cache/
+.turbo/
+coverage/
+
+# Local credentials and diagnostics
+.env*
+!.env.example
+*.log
+logs/
+*.tsbuildinfo
+.tmp-*
+
+# Legacy Vite/Figma development scaffold; Next.js uses src/app instead
+.figma/
+figmasourcedesign/
+index.html
+vite.config.ts
+src/App.tsx
+src/main.tsx
+src/index.css
+src/vite-env.d.ts
+
+# Raw local asset sources. Deployment consumes their curated copies in /public.
+ACHIEVEMENTS/
+GENERAL_ASSEMBLY/
+NATGESS/
+Officers/
+UNIFORMS/
+GESS_Logo.jpg
+
+# Keep the deployable Next.js asset set.
+!public/
+!public/ACHIEVEMENTS/
+!public/GENERAL_ASSEMBLY/
+!public/NATGESS/
+!public/Officers/
+!public/UNIFORMS/
+!public/GESS_Logo.jpg
+
+# Local editor and operating-system metadata
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store

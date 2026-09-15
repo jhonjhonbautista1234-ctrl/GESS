@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --font-display: "Space Grotesk"; --font-body: "Inter"; }
+
+@layer base {
+  * { @apply border-slate-200; }
+  html { scroll-behavior: smooth; }
+  body { @apply min-h-screen bg-mist font-body text-ink antialiased; background-image: linear-gradient(rgba(244, 249, 245, .94), rgba(244, 249, 245, .94)), repeating-linear-gradient(135deg, transparent 0 54px, rgba(43, 102, 54, .045) 55px, transparent 56px); }
+  h1, h2, h3, h4 { @apply font-display tracking-tight; }
+  a { @apply transition duration-200; }
+  ::selection { @apply bg-topo text-forest; }
+}
+
+@layer components {
+  .topo-surface { background-color: #0D2E14; background-image: radial-gradient(circle at 84% 18%, rgba(123, 198, 53, .22), transparent 0 17rem), repeating-linear-gradient(176deg, transparent 0 49px, rgba(123, 198, 53, .10) 50px, transparent 52px), repeating-linear-gradient(92deg, transparent 0 85px, rgba(123, 198, 53, .05) 86px, transparent 88px); }
+  .page-hero { @apply topo-surface relative overflow-hidden px-6 py-16 text-white sm:py-20; }
+  .page-hero::after { content: ""; @apply pointer-events-none absolute -right-16 top-8 h-56 w-56 rounded-full border border-topo/30 sm:h-72 sm:w-72; box-shadow: 0 0 0 26px rgba(123, 198, 53, .06), 0 0 0 54px rgba(123, 198, 53, .04); }
+  .section-kicker { @apply inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-topo; }
+  .section-kicker::before { content: ""; @apply h-2 w-2 rounded-full bg-topo; }
+  .surface-card { @apply rounded-2xl border border-emerald-950/10 bg-white shadow-lift; }
+  .interactive-card { @apply surface-card transition duration-300 hover:-translate-y-1 hover:border-topo/70 hover:shadow-glow; }
+  .button-primary { @apply inline-flex items-center justify-center rounded-xl bg-topo px-5 py-3 font-bold text-forest shadow-lg shadow-topo/10 transition hover:-translate-y-0.5 hover:bg-lime-300 focus:outline-none focus:ring-2 focus:ring-topo focus:ring-offset-2; }
+  .button-secondary { @apply inline-flex items-center justify-center rounded-xl border border-white/35 bg-white/5 px-5 py-3 font-bold text-white transition hover:border-topo hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-topo focus:ring-offset-2 focus:ring-offset-forest; }
+  .image-frame { @apply overflow-hidden rounded-2xl bg-forest shadow-lift; }
+  .content-band { @apply border-y border-emerald-950/5 bg-white/60; }
+  .eyebrow-rule { @apply flex items-center gap-3 text-xs font-bold uppercase tracking-[.16em] text-survey; }
+  .eyebrow-rule::after { content: ""; @apply h-px w-12 bg-topo/70; }
+}

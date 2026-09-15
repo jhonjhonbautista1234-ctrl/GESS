@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --color-green-primary: #2B6636;
+  --color-green-lime: #7BC635;
+  --color-green-deep: #0D2E14;
+  --color-green-light: #F4F9F5;
+  --color-green-mid: #3d8a47;
+  --color-text-primary: #111827;
+  --color-text-muted: #4B5563;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-body);
+}
+
+body {
+  background-color: #F4F9F5;
+  color: #111827;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0D2E14; }
+::-webkit-scrollbar-thumb { background: #2B6636; border-radius: 3px; }
+
+/* Custom utilities */
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+
+/* Crosshair decoration */
+.crosshair::before,
+.crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(123, 198, 53, 0.3);
+}
+.crosshair::before { width: 1px; height: 20px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.crosshair::after { width: 20px; height: 1px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+/* Dropdown animation */
+.dropdown-menu {
+  transform-origin: top;
+  animation: dropIn 0.18s ease forwards;
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px) scaleY(0.96); }
+  to { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+
+/* Topo lines background pattern */
+.topo-bg {
+  background-color: #0D2E14;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 38px,
+      rgba(43, 102, 54, 0.18) 38px,
+      rgba(43, 102, 54, 0.18) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 38px,
+      rgba(43, 102, 54, 0.08) 38px,
+      rgba(43, 102, 54, 0.08) 40px
+    );
+}

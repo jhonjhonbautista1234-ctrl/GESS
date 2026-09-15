@@ -1,0 +1,10 @@
+{
+  "description": "Create stunning websites effortlessly with intuitive design tools, ideal for businesses and individuals looking to establish a strong online presence.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
