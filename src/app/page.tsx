@@ -30,8 +30,8 @@ export default function HomePage() {
             <div className="mt-7 flex flex-wrap gap-3"><Link href="/contacts#suggestions" className="button-primary">Join Our Society <span className="ml-2">→</span></Link><Link href="/events" className="button-secondary">Explore Events</Link></div>
             <div className="mt-12 grid max-w-xl grid-cols-3 gap-6 border-t border-white/15 pt-6">{stats.map(([value, label]) => <div key={label}><p className="font-display text-3xl font-bold text-topo">{value}</p><p className="mt-1 text-xs font-semibold text-emerald-100/65">{label}</p></div>)}</div>
           </div>
-          <div className="relative mx-auto hidden w-full max-w-[16rem] lg:block" aria-label="GESS emblem graphic">
-            <Image src="/assets/hero/gess-hero-emblem.svg" alt="Layered green GESS emblem frame" width={640} height={640} sizes="(max-width: 1280px) 22rem, 26rem" className="h-auto w-full drop-shadow-[0_20px_44px_rgba(0,0,0,.38)]" priority unoptimized />
+          <div className="relative mx-auto hidden w-full max-w-[16rem] justify-center lg:flex" aria-label="GESS logo">
+            <Image src="/GESS_Logo.jpg" alt="GESS logo" width={400} height={400} sizes="(max-width: 1280px) 16rem, 25rem" className="rounded-full object-cover drop-shadow-[0_20px_44px_rgba(0,0,0,.38)]" priority />
           </div>
         </div>
       </section>
