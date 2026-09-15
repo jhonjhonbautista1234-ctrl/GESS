@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="none">
+  <defs>
+    <clipPath id="logoClip"><circle cx="320" cy="320" r="149"/></clipPath>
+    <linearGradient id="outer" x1="84" y1="74" x2="551" y2="570" gradientUnits="userSpaceOnUse"><stop stop-color="#062317"/><stop offset=".34" stop-color="#16713C"/><stop offset=".72" stop-color="#75C72D"/><stop offset="1" stop-color="#113F26"/></linearGradient>
+    <linearGradient id="ring" x1="224" y1="139" x2="409" y2="499" gradientUnits="userSpaceOnUse"><stop stop-color="#C5F05A"/><stop offset=".4" stop-color="#55A83E"/><stop offset="1" stop-color="#0B4B2B"/></linearGradient>
+    <filter id="glow" x="0" y="0" width="640" height="640" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <circle cx="320" cy="320" r="280" stroke="#7BC635" stroke-opacity=".18" stroke-width="2" stroke-dasharray="7 10"/>
+  <circle cx="320" cy="320" r="248" fill="#2B6636" fill-opacity=".45" filter="url(#glow)"/>
+  <circle cx="320" cy="320" r="222" fill="url(#outer)" stroke="#8CDD37" stroke-opacity=".55" stroke-width="4"/>
+  <path d="M109 309C202 228 291 221 393 286s133 48 161 17v159c-84 71-187 74-273 3s-140-54-173-9V309Z" fill="#8BD62B" fill-opacity=".95"/>
+  <path d="M129 212C209 132 302 141 371 204s143 75 169 24v79c-78 62-159 62-234 6s-132-50-184-1l7-100Z" fill="#239346" fill-opacity=".9"/>
+  <path d="M98 389C189 329 263 353 327 410s145 72 210 26l-21 92c-89 54-176 44-248-21s-126-49-172-9l2-109Z" fill="#66B830" fill-opacity=".85"/>
+  <circle cx="320" cy="320" r="171" fill="url(#ring)" stroke="#0C3C22" stroke-width="10"/>
+  <circle cx="320" cy="320" r="151" fill="#F4F9F5" stroke="#0D2E14" stroke-width="4"/>
+  <image href="/GESS_Logo.jpg" x="171" y="171" width="298" height="298" preserveAspectRatio="xMidYMid slice" clip-path="url(#logoClip)"/>
+  <circle cx="320" cy="320" r="151" stroke="#D9F491" stroke-opacity=".8" stroke-width="5"/>
+  <g stroke="#B4EA50" stroke-opacity=".6" stroke-width="2"><path d="M320 29v54"/><path d="M320 557v54"/><path d="M29 320h54"/><path d="M557 320h54"/></g>
+</svg>
