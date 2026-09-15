@@ -1258,7 +1258,7 @@ function Contact() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {[
-                { icon: "↗", label: "Facebook", value: "facebook.com/usepgess" },
+                { icon: "↗", label: "Facebook", value: "GESS Facebook page" },
                 { icon: "◎", label: "Updates", value: "Announcements and activities on Facebook" },
                 { icon: "◌", label: "Community", value: "Student-led learning and collaboration" },
               ].map((c) => (
