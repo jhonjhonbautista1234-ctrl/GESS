@@ -4,8 +4,8 @@ import { SiteHeader } from "@/components/site-header";
 
 interface EventContent { title: string; detail: string; images: readonly string[]; }
 const content: Record<string, EventContent> = {
-  "gess-fest": { title: "GESS FEST", detail: "A celebration of GESS community, activities, and shared achievements.", images: ["/NATGESS/Image1.jpg", "/NATGESS/Image2.jpg", "/NATGESS/Image3.jpg"] },
-  "general-assembly": { title: "GENERAL ASSEMBLY", detail: "Organization updates, conversations, and member participation.", images: ["/GENERAL_ASSEMBLY/AllStudents(2026GeneralAssembly).jpg", "/GENERAL_ASSEMBLY/GE2A.jpg", "/GENERAL_ASSEMBLY/GE3A.jpg", "/GENERAL_ASSEMBLY/GE4A.jpg", "/GENERAL_ASSEMBLY/GE5A.jpg"] },
+  "gess-fest": { title: "GESS FEST", detail: "A celebration of GESS community, activities, and shared achievements.", images: ["/assets/natgess/Image1.jpg", "/assets/natgess/Image2.jpg", "/assets/natgess/Image3.jpg"] },
+  "general-assembly": { title: "GENERAL ASSEMBLY", detail: "Organization updates, conversations, and member participation.", images: ["/assets/general_assembly/AllStudents(2026GeneralAssembly).jpg", "/assets/general_assembly/GE2A.jpg", "/assets/general_assembly/GE3A.jpg", "/assets/general_assembly/GE4A.jpg", "/assets/general_assembly/GE5A.jpg"] },
   "ge-night": { title: "GE NIGHT", detail: "A dedicated night for connection across the geodetic engineering community.", images: [] },
   geodexpo: { title: "GeodExpo", detail: "A showcase for mapping, spatial data, research, and technical projects.", images: [] },
 };

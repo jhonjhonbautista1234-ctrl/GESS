@@ -4,7 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { --font-display: "Space Grotesk"; --font-body: "Inter"; }
+:root {
+  --font-display: "Space Grotesk";
+  --font-body: "Inter";
+  --gess-deep: #0D2E14;
+  --gess-primary: #2B6636;
+  --gess-mid: #3D8A47;
+  --gess-lime: #7BC635;
+  --gess-light: #F4F9F5;
+}
 
 @layer base {
   * { @apply border-slate-200; }
@@ -13,10 +21,18 @@
   h1, h2, h3, h4 { @apply font-display tracking-tight; }
   a { @apply transition duration-200; }
   ::selection { @apply bg-topo text-forest; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--gess-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--gess-primary); border-radius: 999px; }
 }
 
 @layer components {
   .topo-surface { background-color: #0D2E14; background-image: radial-gradient(circle at 84% 18%, rgba(123, 198, 53, .22), transparent 0 17rem), repeating-linear-gradient(176deg, transparent 0 49px, rgba(123, 198, 53, .10) 50px, transparent 52px), repeating-linear-gradient(92deg, transparent 0 85px, rgba(123, 198, 53, .05) 86px, transparent 88px); }
+  .topo-grid { background-color: var(--gess-deep); background-image: linear-gradient(rgba(43, 102, 54, .10) 1px, transparent 1px), linear-gradient(90deg, rgba(43, 102, 54, .10) 1px, transparent 1px); background-size: 56px 56px; }
+  .crosshair { @apply relative grid h-8 w-8 place-items-center rounded-full border border-topo/35; }
+  .crosshair::before, .crosshair::after { content: ""; @apply absolute bg-topo/40; }
+  .crosshair::before { @apply h-5 w-px; }
+  .crosshair::after { @apply h-px w-5; }
   .page-hero { @apply topo-surface relative overflow-hidden px-6 py-16 text-white sm:py-20; }
   .page-hero::after { content: ""; @apply pointer-events-none absolute -right-16 top-8 h-56 w-56 rounded-full border border-topo/30 sm:h-72 sm:w-72; box-shadow: 0 0 0 26px rgba(123, 198, 53, .06), 0 0 0 54px rgba(123, 198, 53, .04); }
   .section-kicker { @apply inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-topo; }
@@ -30,3 +46,5 @@
   .eyebrow-rule { @apply flex items-center gap-3 text-xs font-bold uppercase tracking-[.16em] text-survey; }
   .eyebrow-rule::after { content: ""; @apply h-px w-12 bg-topo/70; }
 }
+
+@keyframes drop-in { from { opacity: 0; transform: translateY(-6px) scaleY(.96); } to { opacity: 1; transform: translateY(0) scaleY(1); } }

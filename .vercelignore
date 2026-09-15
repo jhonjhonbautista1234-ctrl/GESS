@@ -21,6 +21,8 @@ logs/
 # Legacy Vite/Figma development scaffold; Next.js uses src/app instead
 .figma/
 figmasourcedesign/
+Design2/
+**/*.fig
 index.html
 vite.config.ts
 src/App.tsx
@@ -38,11 +40,8 @@ GESS_Logo.jpg
 
 # Keep the deployable Next.js asset set.
 !public/
-!public/ACHIEVEMENTS/
-!public/GENERAL_ASSEMBLY/
-!public/NATGESS/
-!public/Officers/
-!public/UNIFORMS/
+!public/assets/
+!public/assets/**
 !public/GESS_Logo.jpg
 
 # Local editor and operating-system metadata

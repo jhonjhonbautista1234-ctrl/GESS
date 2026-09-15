@@ -23,6 +23,8 @@ logs/
 /UNIFORMS/
 /GESS_Logo.jpg
 /figmasourcedesign/
+/Design2/
+**/*.fig
 
 # Platform-managed agentplat state, not project source. In the
 # client-initiated single-repo workspace layout (make's `Path: "."` spec) the

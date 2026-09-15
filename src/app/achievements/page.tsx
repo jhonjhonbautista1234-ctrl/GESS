@@ -2,11 +2,11 @@ import Image from "next/image";
 import { SiteHeader } from "@/components/site-header";
 
 const images = [
-  ["Map-Making Champion", "/ACHIEVEMENTS/2025/mapmakingchampion.jpg", "2025"],
-  ["Quiz Show Second Place", "/ACHIEVEMENTS/2025/quizshowsecondplace.jpg", "2025"],
-  ["Second Best Research", "/ACHIEVEMENTS/2025/secondbestresearch.jpg", "2025"],
-  ["Mapping Day 2026", "/ACHIEVEMENTS/2026/MD2026.jpg", "2026"],
-  ["Roxy and Friends Champions", "/ACHIEVEMENTS/2026/RoxyandFriendsChamp2026.jpg", "2026"],
+  ["Map-Making Champion", "/assets/achievements/2025/mapmakingchampion.jpg", "2025"],
+  ["Quiz Show Second Place", "/assets/achievements/2025/quizshowsecondplace.jpg", "2025"],
+  ["Second Best Research", "/assets/achievements/2025/secondbestresearch.jpg", "2025"],
+  ["Mapping Day 2026", "/assets/achievements/2026/MD2026.jpg", "2026"],
+  ["Roxy and Friends Champions", "/assets/achievements/2026/RoxyandFriendsChamp2026.jpg", "2026"],
 ] as const;
 
 export default function AchievementsPage() {
