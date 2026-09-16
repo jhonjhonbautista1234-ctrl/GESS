@@ -31,12 +31,12 @@ src/index.css
 src/vite-env.d.ts
 
 # Raw local asset sources. Deployment consumes their curated copies in /public.
-ACHIEVEMENTS/
-GENERAL_ASSEMBLY/
-NATGESS/
-Officers/
-UNIFORMS/
-GESS_Logo.jpg
+/ACHIEVEMENTS/
+/GENERAL_ASSEMBLY/
+/NATGESS/
+/Officers/
+/UNIFORMS/
+/GESS_Logo.jpg
 
 # Keep the deployable Next.js asset set.
 !public/
