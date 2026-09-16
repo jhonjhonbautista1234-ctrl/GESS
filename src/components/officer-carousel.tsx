@@ -69,7 +69,7 @@ export function OfficerCarousel({ officers }: OfficerCarouselProps) {
   return (
     <section aria-roledescription="carousel" aria-label="GESS officers" className="relative select-none">
       <div
-        className="relative flex h-[19rem] touch-pan-y items-center justify-center overflow-hidden sm:h-[25rem] lg:h-[29rem]"
+        className="relative flex h-[17rem] touch-pan-y items-center justify-center overflow-hidden sm:h-[23rem] lg:h-[29rem] xl:h-[32rem]"
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         onPointerCancel={() => setDragging(false)}
@@ -92,7 +92,7 @@ export function OfficerCarousel({ officers }: OfficerCarouselProps) {
               onClick={() => {
                 if (!dragged.current) setActive(index);
               }}
-              className="absolute w-[17rem] overflow-hidden rounded-2xl border bg-forest text-left shadow-lift focus:outline-none focus:ring-2 focus:ring-topo focus:ring-offset-2 focus:ring-offset-forest sm:w-[25rem]"
+              className="absolute w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border bg-forest text-left shadow-lift focus:outline-none focus:ring-2 focus:ring-topo focus:ring-offset-2 focus:ring-offset-forest sm:w-[34rem] lg:w-[42rem] xl:w-[44rem]"
               style={{
                 borderColor: isActive ? "rgba(123, 198, 53, .68)" : "rgba(43, 102, 54, .40)",
                 transform: `translateX(${offset * (isActive ? 0 : 43)}%) scale(${isActive ? 1 : isAdjacent ? 0.76 : 0.58})`,
@@ -106,7 +106,7 @@ export function OfficerCarousel({ officers }: OfficerCarouselProps) {
                   src={officer.image}
                   alt={officer.alt}
                   fill
-                  sizes="(max-width: 640px) 272px, 400px"
+                  sizes="(max-width: 640px) 336px, (max-width: 1024px) 544px, 704px"
                   draggable={false}
                   className="object-contain transition-transform duration-300 motion-reduce:transition-none"
                   priority={index === 0}
@@ -120,10 +120,10 @@ export function OfficerCarousel({ officers }: OfficerCarouselProps) {
                     <i className="h-1.5 w-1.5 rounded-full bg-topo" /> Officer profile
                   </span>
                 )}
-                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-                  <p className="font-display text-base font-bold leading-tight text-white sm:text-xl">{officer.name}</p>
-                  <p className="mt-1 text-xs font-bold text-topo sm:text-sm">{officer.role}</p>
-                  <p className="mt-1 text-[10px] text-white/60 sm:text-xs">{officer.committee}</p>
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6">
+                  <p className="font-display text-base font-bold leading-tight text-white sm:text-xl lg:text-2xl">{officer.name}</p>
+                  <p className="mt-1 text-xs font-bold text-topo sm:text-sm lg:text-base">{officer.role}</p>
+                  <p className="mt-1 text-[10px] text-white/60 sm:text-xs lg:text-sm">{officer.committee}</p>
                 </div>
               </div>
             </button>
