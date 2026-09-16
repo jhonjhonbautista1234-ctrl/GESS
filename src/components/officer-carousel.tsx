@@ -1,60 +1,157 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { ChevronLeft, ChevronRight, Crosshair } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-const images = Array.from({ length: 26 }, (_, i) => `/assets/officers/pictures/${i + 1}.jpg`);
+export interface Officer {
+  name: string;
+  role: string;
+  committee: string;
+  image: string;
+  alt: string;
+}
 
-export function OfficerCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+interface OfficerCarouselProps {
+  officers: Officer[];
+}
 
-  const showPrevious = () => {
-    setCurrentIndex((index) => (index - 1 + images.length) % images.length);
+export function OfficerCarousel({ officers }: OfficerCarouselProps) {
+  const [active, setActive] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const dragStart = useRef(0);
+  const dragged = useRef(false);
+  const total = officers.length;
+
+  useEffect(() => {
+    setActive(0);
+  }, [total]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") setActive((current) => (current - 1 + total) % total);
+      if (event.key === "ArrowRight") setActive((current) => (current + 1) % total);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [total]);
+
+  if (total === 0) return null;
+
+  const previous = () => setActive((current) => (current - 1 + total) % total);
+  const next = () => setActive((current) => (current + 1) % total);
+
+  const getOffset = (index: number) => {
+    const raw = index - active;
+    if (raw > total / 2) return raw - total;
+    if (raw < -total / 2) return raw + total;
+    return raw;
   };
 
-  const showNext = () => {
-    setCurrentIndex((index) => (index + 1) % images.length);
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    setDragging(true);
+    dragged.current = false;
+    dragStart.current = event.clientX;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const onPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const distance = event.clientX - dragStart.current;
+    dragged.current = Math.abs(distance) > 8;
+    setDragging(false);
+
+    if (distance < -40) next();
+    if (distance > 40) previous();
   };
 
   return (
-    <div className="relative h-[60vh] min-h-[24rem] overflow-hidden rounded-2xl bg-[#0D2E14] shadow-lift md:h-[80vh]">
+    <section aria-roledescription="carousel" aria-label="GESS officers" className="relative select-none">
       <div
-        className="flex h-full transition-transform duration-500 ease-in-out"
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        className="relative flex h-[19rem] touch-pan-y items-center justify-center overflow-hidden sm:h-[25rem] lg:h-[29rem]"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => setDragging(false)}
+        style={{ cursor: dragging ? "grabbing" : "grab" }}
       >
-        {images.map((src, index) => (
-          <div className="relative h-full min-w-full" key={src}>
-            <Image
-              src={src}
-              alt={`GESS officer portrait ${index + 1}`}
-              fill
-              sizes="(max-width: 768px) 100vw, 1152px"
-              className="object-cover"
-              priority={index === 0}
-            />
-          </div>
-        ))}
+        {officers.map((officer, index) => {
+          const offset = getOffset(index);
+          const isActive = offset === 0;
+          const isAdjacent = Math.abs(offset) === 1;
+          const isVisible = Math.abs(offset) <= 2;
+
+          if (!isVisible) return null;
+
+          return (
+            <button
+              key={officer.image}
+              type="button"
+              aria-label={`View ${officer.name}`}
+              aria-current={isActive ? "true" : undefined}
+              onClick={() => {
+                if (!dragged.current) setActive(index);
+              }}
+              className="absolute w-[17rem] overflow-hidden rounded-2xl border bg-forest text-left shadow-lift focus:outline-none focus:ring-2 focus:ring-topo focus:ring-offset-2 focus:ring-offset-forest sm:w-[25rem]"
+              style={{
+                borderColor: isActive ? "rgba(123, 198, 53, .68)" : "rgba(43, 102, 54, .40)",
+                transform: `translateX(${offset * (isActive ? 0 : 43)}%) scale(${isActive ? 1 : isAdjacent ? 0.76 : 0.58})`,
+                opacity: isActive ? 1 : isAdjacent ? 0.68 : 0.24,
+                zIndex: isActive ? 10 : isAdjacent ? 6 : 3,
+                transition: dragging ? "none" : "transform 300ms ease-out, opacity 300ms ease-out, box-shadow 300ms ease-out",
+              }}
+            >
+              <div className="relative aspect-video bg-[#071c0c]">
+                <Image
+                  src={officer.image}
+                  alt={officer.alt}
+                  fill
+                  sizes="(max-width: 640px) 272px, 400px"
+                  draggable={false}
+                  className="object-contain transition-transform duration-300 motion-reduce:transition-none"
+                  priority={index === 0}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#061b0b]/95 via-[#061b0b]/18 to-transparent" />
+                <div className="absolute right-3 top-3 rounded-full border border-topo/35 bg-forest/65 p-1.5 text-topo backdrop-blur-sm">
+                  <Crosshair aria-hidden="true" size={15} strokeWidth={1.6} />
+                </div>
+                {isActive && (
+                  <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-topo/45 bg-forest/75 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.14em] text-topo backdrop-blur-sm">
+                    <i className="h-1.5 w-1.5 rounded-full bg-topo" /> Officer profile
+                  </span>
+                )}
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+                  <p className="font-display text-base font-bold leading-tight text-white sm:text-xl">{officer.name}</p>
+                  <p className="mt-1 text-xs font-bold text-topo sm:text-sm">{officer.role}</p>
+                  <p className="mt-1 text-[10px] text-white/60 sm:text-xs">{officer.committee}</p>
+                </div>
+              </div>
+            </button>
+          );
+        })}
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/45 to-transparent" />
-      <button
-        type="button"
-        onClick={showPrevious}
-        aria-label="Show previous officer image"
-        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 px-6 py-2 text-sm font-bold tracking-[.12em] text-white backdrop-blur-md transition hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-[#7BC635] md:left-8"
-      >
-        ← PREV
-      </button>
-      <button
-        type="button"
-        onClick={showNext}
-        aria-label="Show next officer image"
-        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 px-6 py-2 text-sm font-bold tracking-[.12em] text-white backdrop-blur-md transition hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-[#7BC635] md:right-8"
-      >
-        NEXT →
-      </button>
-      <p className="absolute bottom-5 left-1/2 -translate-x-1/2 text-xs font-bold tracking-[.16em] text-white/80">
-        {String(currentIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
-      </p>
-    </div>
+
+      <div className="mt-3 flex items-center justify-center gap-3 sm:mt-5">
+        <button type="button" onClick={previous} aria-label="Previous officer" className="grid h-11 w-11 place-items-center rounded-full border border-topo/35 bg-white/5 text-topo transition hover:bg-topo hover:text-forest focus:outline-none focus:ring-2 focus:ring-topo focus:ring-offset-2 focus:ring-offset-forest">
+          <ChevronLeft aria-hidden="true" size={20} />
+        </button>
+        <div className="flex max-w-[13rem] flex-wrap justify-center gap-1.5" aria-label={`Slide ${active + 1} of ${total}`}>
+          {officers.map((officer, index) => (
+            <button
+              key={officer.image}
+              type="button"
+              onClick={() => setActive(index)}
+              aria-label={`View ${officer.name}`}
+              aria-current={index === active ? "true" : undefined}
+              className={`h-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-topo focus:ring-offset-2 focus:ring-offset-forest ${index === active ? "w-6 bg-topo" : "w-2 bg-topo/30 hover:bg-topo/70"}`}
+            />
+          ))}
+        </div>
+        <button type="button" onClick={next} aria-label="Next officer" className="grid h-11 w-11 place-items-center rounded-full border border-topo/35 bg-white/5 text-topo transition hover:bg-topo hover:text-forest focus:outline-none focus:ring-2 focus:ring-topo focus:ring-offset-2 focus:ring-offset-forest">
+          <ChevronRight aria-hidden="true" size={20} />
+        </button>
+      </div>
+      <p className="mt-4 text-center text-xs font-semibold tracking-[.14em] text-emerald-50/55">{String(active + 1).padStart(2, "0")} / {String(total).padStart(2, "0")} · Use arrow keys or swipe to browse</p>
+    </section>
   );
 }
