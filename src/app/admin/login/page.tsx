@@ -10,8 +10,11 @@ export default function LoginPage() {
   const [pending, setPending] = useState(false);
   const router = useRouter();
   async function submit(formData: FormData) {
+    const email = String(formData.get("email") ?? "").trim().toLowerCase();
+    const password = String(formData.get("password") ?? "");
+
     setPending(true); setError("");
-    const { error: signInError } = await createClient().auth.signInWithPassword({ email: String(formData.get("email")), password: String(formData.get("password")) });
+    const { error: signInError } = await createClient().auth.signInWithPassword({ email, password });
     if (signInError) { setError("The email or password was not recognized."); setPending(false); return; }
     router.replace("/admin/dashboard"); router.refresh();
   }
