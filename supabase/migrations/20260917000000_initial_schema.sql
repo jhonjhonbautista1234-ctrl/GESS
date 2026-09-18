@@ -1,5 +1,6 @@
--- Compatibility snapshot only. The versioned files in supabase/migrations are
--- the source of truth; do not apply this file to an existing project.
+-- Baseline schema for a new Supabase project.
+-- Existing projects must mark this migration as applied rather than rerunning it.
+
 create extension if not exists pgcrypto;
 
 create table if not exists public.profiles (
@@ -68,6 +69,8 @@ begin
   return new;
 end;
 $$;
+
+revoke all on function public.handle_new_user() from public;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created

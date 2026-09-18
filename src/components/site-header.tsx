@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 const links = [
+  ["Announcements", "/announcements"],
   ["Events", "/events"],
   ["Documents", "/documents"],
   ["Achievements", "/achievements"],

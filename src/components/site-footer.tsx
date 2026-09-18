@@ -1,7 +1,11 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 const links = [
+  ["Announcements", "/announcements"],
   ["Events", "/events"],
   ["Documents", "/documents"],
   ["Achievements", "/achievements"],
@@ -11,6 +15,8 @@ const links = [
 ] as const;
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/admin")) return null;
   return (
     <footer className="border-t border-survey/35 bg-[#050f07] px-5 py-9 text-white sm:px-8">
       <div className="mx-auto flex max-w-7xl flex-col justify-between gap-7 sm:flex-row sm:items-center">

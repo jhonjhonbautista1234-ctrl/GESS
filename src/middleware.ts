@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const publicAdminRoutes = new Set(["/admin/login", "/admin/register"]);
+const publicAdminRoutes = new Set(["/admin/login"]);
 
 export async function middleware(request: NextRequest) {
   if (publicAdminRoutes.has(request.nextUrl.pathname)) return NextResponse.next({ request });

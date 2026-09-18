@@ -608,7 +608,7 @@ function Hero() {
               }}
             >
               {[
-                { value: "500+", label: "Active Members" },
+                { value: "126+", label: "Active Members" },
                 { value: "13+", label: "Years of Excellence" },
                 { value: "30+", label: "Projects Completed" },
               ].map((s) => (

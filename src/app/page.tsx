@@ -12,8 +12,8 @@ const destinations = [
 ] as const;
 
 const stats = [
-  ["500+", "Active Members"],
-  ["13+", "Years of Excellence"],
+  ["160+", "Active Members"],
+  ["15+", "Years of Excellence"],
   ["30+", "Projects Completed"],
 ] as const;
 
@@ -24,7 +24,7 @@ export default function HomePage() {
         <TopographicBackground />
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
           <div>
-            <p className="section-kicker">USEP - EST. 2011</p>
+            <p className="section-kicker">EST. 2011</p>
             <h1 className="mt-4 max-w-4xl text-4xl font-bold leading-[.98] sm:text-5xl lg:text-[3.25rem]">Precision in <span className="text-topo">Every</span><br />Dimension.<br />Excellence in <span className="hero-outline">Every Map.</span></h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-emerald-50/80">Empowering the next generation of spatial data scientists and geodetic engineers to measure the earth and model the future.</p>
             <div className="mt-7 flex flex-wrap gap-3"><Link href="/contacts#suggestions" className="button-primary">Join Our Society <span className="ml-2">→</span></Link><Link href="/events" className="button-secondary">Explore Events</Link></div>

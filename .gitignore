@@ -24,6 +24,7 @@ logs/
 /GESS_Logo.jpg
 /figmasourcedesign/
 /Design2/
+/AdminDesign/
 **/*.fig
 
 # Platform-managed agentplat state, not project source. In the
@@ -32,3 +33,6 @@ logs/
 # beside it.
 /.plugins/
 /.opencode-skills/
+
+.vercel
+.env*

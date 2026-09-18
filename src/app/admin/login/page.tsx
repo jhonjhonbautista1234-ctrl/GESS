@@ -1,3 +1,19 @@
 "use client";
-import { useState } from "react"; import { useRouter } from "next/navigation"; import { createClient } from "@/lib/supabase/browser";
-export default function LoginPage() { const [error, setError] = useState(""); const router = useRouter(); async function submit(form: FormData) { const { error } = await createClient().auth.signInWithPassword({ email: String(form.get("email")), password: String(form.get("password")) }); if (error) setError("Invalid credentials."); else router.replace("/admin/dashboard"); } return <main className="grid min-h-dvh place-items-center bg-forest p-6"><form action={submit} className="w-full max-w-md rounded-2xl bg-white p-8"><h1 className="text-2xl font-bold">GESS Admin</h1><label className="mt-6 block text-sm">Email<input name="email" required type="email" className="mt-2 h-11 w-full rounded border px-3"/></label><label className="mt-4 block text-sm">Password<input name="password" required type="password" className="mt-2 h-11 w-full rounded border px-3"/></label>{error && <p role="alert" className="mt-3 text-sm text-red-700">{error}</p>}<button className="mt-6 w-full rounded bg-survey py-3 font-bold text-white">Sign in</button></form></main>; }
+
+import { LockKeyhole } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/browser";
+
+export default function LoginPage() {
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+  const router = useRouter();
+  async function submit(formData: FormData) {
+    setPending(true); setError("");
+    const { error: signInError } = await createClient().auth.signInWithPassword({ email: String(formData.get("email")), password: String(formData.get("password")) });
+    if (signInError) { setError("The email or password was not recognized."); setPending(false); return; }
+    router.replace("/admin/dashboard"); router.refresh();
+  }
+  return <main className="studio-login"><form action={submit} className="studio-login-card"><span className="studio-monogram"><LockKeyhole size={16} /></span><p className="studio-eyebrow mt-6">GESS / Content Studio</p><h1 className="studio-heading">Administrator sign in</h1><p className="studio-muted mt-3">Use the one administrator account managed in Supabase Authentication.</p><label className="studio-field mt-7">Email<input name="email" type="email" autoComplete="username" required /></label><label className="studio-field">Password<input name="password" type="password" autoComplete="current-password" required /></label>{error && <p className="studio-alert is-error" role="alert">{error}</p>}<button className="studio-button is-primary mt-4 w-full" disabled={pending} type="submit">{pending ? "Signing in…" : "Sign in to workspace"}</button><p className="studio-muted mt-5 text-center">Account creation is not available on this website.</p></form></main>;
+}

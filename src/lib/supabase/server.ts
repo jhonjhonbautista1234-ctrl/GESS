@@ -7,7 +7,7 @@ const fetchWithTimeout: typeof fetch = async (input, init) => {
 };
 
 export async function createClient() {
-	const store = cookies();
+	const store = await cookies();
 	type Update = { name: string; value: string; options: Parameters<typeof store.set>[2] };
 
 	return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {

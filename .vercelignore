@@ -22,6 +22,7 @@ logs/
 .figma/
 figmasourcedesign/
 Design2/
+AdminDesign/
 **/*.fig
 index.html
 vite.config.ts
