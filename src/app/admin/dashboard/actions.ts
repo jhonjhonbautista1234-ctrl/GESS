@@ -21,4 +21,5 @@ export async function createBlog(form: FormData) {
 
   revalidatePath("/blog");
   revalidatePath("/admin/dashboard");
+  revalidatePath("/admin/dashboard/journalism");
 }

@@ -480,7 +480,7 @@ function Hero() {
                 backgroundColor: "rgba(123,198,53,0.08)",
               }}
             >
-              <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#7BC635" }} />
+              <div style={{ width: 3, height: 3, borderRadius: "50%", backgroundColor: "#7BC635" }} />
               <span style={{ fontSize: 11, color: "#7BC635", fontFamily: "var(--font-display)", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase" }}>
                 Geodetic Engineering Students Society
               </span>

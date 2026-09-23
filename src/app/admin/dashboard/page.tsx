@@ -28,8 +28,8 @@ export default async function DashboardPage() {
     </section>
     <section className="studio-overview-grid">
       <div className="grid gap-4">
-        <section className="studio-card"><p className="studio-label">Quick actions</p><div className="mt-4 grid gap-2 sm:grid-cols-2"><QuickLink href="/admin/dashboard/announcements" icon={<Megaphone size={16} />} label="Create an announcement" /><QuickLink href="#new-article" icon={<PenLine size={16} />} label="Write an article" /><QuickLink href="/admin/dashboard/announcements" icon={<FilePlus2 size={16} />} label="Review content library" /><QuickLink href="#inbox" icon={<MessageSquareText size={16} />} label="Review private messages" /></div></section>
-        <div className="grid gap-4 lg:grid-cols-2"><ContentPanel label="Announcements" rows={announcementRows} href="/admin/dashboard/announcements" /><ContentPanel label="Articles" rows={postRows} href="#new-article" /></div>
+        <section className="studio-card"><p className="studio-label">Quick actions</p><div className="mt-4 grid gap-2 sm:grid-cols-2"><QuickLink href="/admin/dashboard/announcements" icon={<Megaphone size={16} />} label="Create an announcement" /><QuickLink href="/admin/dashboard/journalism" icon={<PenLine size={16} />} label="Write an article" /><QuickLink href="/admin/dashboard/events" icon={<FilePlus2 size={16} />} label="Review media libraries" /><QuickLink href="/admin/dashboard/contacts" icon={<MessageSquareText size={16} />} label="Review private messages" /></div></section>
+        <div className="grid gap-4 lg:grid-cols-2"><ContentPanel label="Announcements" rows={announcementRows} href="/admin/dashboard/announcements" /><ContentPanel label="Articles" rows={postRows} href="/admin/dashboard/journalism" /></div>
         <section id="new-article" className="studio-card"><p className="studio-eyebrow">Journalism</p><h2 className="text-xl font-bold">Draft a new article</h2><p className="studio-muted mt-2">This is a private draft until you select publish.</p><BlogForm /></section>
       </div>
       <div id="inbox"><MessageInbox initialMessages={messages} /></div>
