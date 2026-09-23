@@ -29,6 +29,7 @@ export function OfficerCarousel({ officers }: OfficerCarouselProps) {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (!total) return;
       if (event.key === "ArrowLeft") setActive((current) => (current - 1 + total) % total);
       if (event.key === "ArrowRight") setActive((current) => (current + 1) % total);
     };

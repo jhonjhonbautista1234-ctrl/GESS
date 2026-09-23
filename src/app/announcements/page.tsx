@@ -1,4 +1,5 @@
 import { SiteHeader } from "@/components/site-header";
+import Image from "next/image";
 import { getPublishedAnnouncements } from "@/features/announcements/queries";
 import { connection } from "next/server";
 
@@ -47,6 +48,7 @@ export default async function AnnouncementsPage() {
               <div className="space-y-5">
                 {announcements.map((announcement) => (
                   <article className="interactive-card overflow-hidden" key={announcement.id}>
+                    {announcement.imageUrl && <Image src={announcement.imageUrl} alt={announcement.title} width={1200} height={900} className="max-h-[40rem] w-full bg-forest object-contain" />}
                     <div
                       className="relative flex min-h-56 items-end overflow-hidden p-7 text-white sm:p-9"
                       style={{

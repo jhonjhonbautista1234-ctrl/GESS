@@ -9,6 +9,7 @@ type PublishedAnnouncementRow = {
   id: string;
   title: string;
   body: string;
+  image_url: string | null;
   excerpt: string | null;
   is_pinned: boolean;
   published_at: string;
@@ -22,7 +23,7 @@ const getCachedPublishedAnnouncements = unstable_cache(
     const supabase = createPublicServerClient();
     const { data, error } = await supabase
       .from("announcements")
-      .select("id,title,body,excerpt,is_pinned,published_at,created_at,updated_at,design")
+      .select("id,title,body,image_url,excerpt,is_pinned,published_at,created_at,updated_at,design")
       .eq("status", "published")
       .is("deleted_at", null)
       .lte("published_at", new Date().toISOString())
@@ -40,6 +41,7 @@ const getCachedPublishedAnnouncements = unstable_cache(
       id: announcement.id,
       title: announcement.title,
       body: announcement.body,
+      imageUrl: announcement.image_url,
       excerpt: announcement.excerpt,
       isPinned: announcement.is_pinned,
       publishedAt: announcement.published_at,

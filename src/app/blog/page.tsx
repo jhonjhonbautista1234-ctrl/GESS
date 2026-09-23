@@ -1,2 +1,3 @@
-import Link from "next/link"; import { SiteHeader } from "@/components/site-header"; import { createClient } from "@/lib/supabase/server";
-export default async function BlogPage() { const supabase = await createClient(); const { data } = await supabase.from("blog_posts").select("id,title,slug,excerpt,published_at").eq("status","published").order("published_at",{ascending:false}); return <><SiteHeader/><main className="mx-auto max-w-4xl px-6 py-16"><p className="font-semibold tracking-widest text-survey">JOURNALISM</p><h1 className="mt-3 text-4xl font-bold">GESS stories</h1><div className="mt-10 space-y-5">{data?.map((post) => <Link href={`/blog/${post.slug}`} className="block rounded-xl border bg-white p-6 hover:border-topo" key={post.id}><h2 className="text-2xl font-bold">{post.title}</h2><p className="mt-3 text-slate-600">{post.excerpt}</p></Link>) || <p>No articles published yet.</p>}</div></main></>; }
+import PublicContent from "@/components/public-content";
+export const dynamic = "force-dynamic";
+export default function Page() { return <PublicContent module="journalism" />; }

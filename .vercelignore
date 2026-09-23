@@ -4,6 +4,7 @@
 .gitattributes
 node_modules/
 .next/
+.next-before-cms/
 dist/
 build/
 .cache/

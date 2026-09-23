@@ -1,2 +1,3 @@
-import { SiteHeader } from "@/components/site-header";
-export default function DocumentsPage() { return <><SiteHeader/><main><section className="page-hero"><div className="relative z-10 mx-auto max-w-7xl"><p className="section-kicker">Resources</p><h1 className="mt-4 text-4xl font-bold sm:text-5xl">GESS documents</h1><p className="mt-5 max-w-xl leading-7 text-emerald-50/80">Essential organizational references in a clear, browser-friendly format.</p></div></section><section className="mx-auto max-w-7xl px-6 py-14"><a className="interactive-card block max-w-xl p-6" href="/assets/officers/officers.pdf" rel="noreferrer" target="_blank"><p className="section-kicker text-survey">PDF</p><h2 className="mt-3 text-xl font-bold text-forest">Officer directory</h2><p className="mt-2 text-sm text-slate-600">Open the current leadership document in a new tab.</p><span className="mt-5 inline-block font-bold text-survey">Open document ↗</span></a></section></main></>; }
+import PublicContent from "@/components/public-content";
+export const dynamic = "force-dynamic";
+export default function Page() { return <PublicContent module="documents" />; }

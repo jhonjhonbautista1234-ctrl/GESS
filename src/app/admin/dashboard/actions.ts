@@ -1,25 +1,13 @@
 "use server";
-
-import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/admin";
+import { redirect } from "next/navigation";
+import { createJournalism } from "@/app/actions/admin";
 
 export async function createBlog(form: FormData) {
-  const { supabase, user } = await requireAdmin();
-  const title = String(form.get("title")).trim();
-  const published = Boolean(form.get("publish"));
-  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-
-  await supabase.from("blog_posts").insert({
-    title,
-    slug,
-    excerpt: String(form.get("excerpt")).trim(),
-    content: String(form.get("content")).trim(),
-    status: published ? "published" : "draft",
-    published_at: published ? new Date().toISOString() : null,
-    created_by: user.id,
-  });
-
-  revalidatePath("/blog");
-  revalidatePath("/admin/dashboard");
-  revalidatePath("/admin/dashboard/journalism");
+ const title = String(form.get("title") ?? "").trim();
+ form.set("slug", title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + crypto.randomUUID().slice(0,8));
+ form.set("body", String(form.get("content") ?? ""));
+ form.set("status", form.get("publish") ? "published" : "draft");
+ const result = await createJournalism(form);
+ if (!result.success) throw new Error(result.message);
+ redirect("/admin/dashboard/journalism");
 }
