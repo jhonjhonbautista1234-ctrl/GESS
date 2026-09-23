@@ -4,6 +4,24 @@ import { useEffect, useRef } from "react";
 
 type Point = { x: number; y: number };
 
+const STARS = Array.from({ length: 160 }, (_, index) => {
+  const color = index % 11 < 7 ? "210,230,255" : index % 11 < 9 ? "255,230,190" : "255,160,130";
+  return {
+    x: Math.sin(index * 127.1 + 3.3) * 0.5 + 0.5,
+    y: Math.sin(index * 311.7 + 1.3) * 0.5 + 0.5,
+    radius: 0.35 + (Math.sin(index * 57.3) * 0.5 + 0.5) * 1.4,
+    phase: Math.sin(index * 19.4) * Math.PI * 2,
+    speed: 0.55 + (Math.sin(index * 43.1) * 0.5 + 0.5) * 1.9,
+    color,
+  };
+});
+
+const CONSTELLATIONS = [
+  { name: "CRUX", stars: [[0.78, 0.18], [0.78, 0.08], [0.73, 0.13], [0.83, 0.13], [0.75, 0.1]], lines: [[0, 1], [2, 3], [0, 4]] },
+  { name: "ORION", stars: [[0.14, 0.22], [0.22, 0.3], [0.1, 0.3], [0.14, 0.27], [0.16, 0.27], [0.18, 0.27], [0.2, 0.22]], lines: [[0, 3], [0, 2], [1, 5], [3, 4], [4, 5], [6, 5], [2, 3], [1, 6]] },
+  { name: "SCORPIUS", stars: [[0.48, 0.82], [0.45, 0.78], [0.5, 0.78], [0.52, 0.82], [0.54, 0.85], [0.57, 0.88], [0.6, 0.86], [0.63, 0.83], [0.65, 0.8]], lines: [[1, 0], [0, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8]] },
+] as const;
+
 export default function AdminBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -39,11 +57,63 @@ export default function AdminBackground() {
 
     let frame = 0;
     let time = 0;
-    const draw = () => {
+    let nextMeteor = 3;
+    const meteors: Array<{ x: number; y: number; vx: number; vy: number; life: number; maxLife: number; length: number }> = [];
+
+    const drawAstronomy = (width: number, height: number, delta: number) => {
+      const nebulae = [
+        { x: 0.16, y: 0.4, radius: 0.22, color: "220,60,130", alpha: 0.025, drift: 0.08 },
+        { x: 0.72, y: 0.28, radius: 0.18, color: "60,110,230", alpha: 0.022, drift: -0.06 },
+        { x: 0.5, y: 0.6, radius: 0.28, color: "130,60,210", alpha: 0.018, drift: 0.05 },
+      ];
+      nebulae.forEach((nebula) => {
+        const x = width * (nebula.x + nebula.drift * Math.sin(time * 0.11));
+        const y = height * (nebula.y + nebula.drift * Math.cos(time * 0.085));
+        const radius = width * nebula.radius;
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        gradient.addColorStop(0, `rgba(${nebula.color},${nebula.alpha})`);
+        gradient.addColorStop(1, `rgba(${nebula.color},0)`);
+        ctx.fillStyle = gradient; ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+      });
+      STARS.forEach((star) => {
+        const twinkle = 0.52 + 0.48 * Math.sin(time * star.speed + star.phase);
+        const alpha = 0.06 + twinkle * 0.16;
+        const x = star.x * width; const y = star.y * height; const radius = star.radius * (0.78 + twinkle * 0.38);
+        ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(${star.color},${alpha})`; ctx.fill();
+      });
+      CONSTELLATIONS.forEach((constellation) => {
+        ctx.setLineDash([3, 5]); ctx.strokeStyle = "rgba(160,190,255,0.07)"; ctx.lineWidth = 0.55;
+        constellation.lines.forEach(([from, to]) => { const a = constellation.stars[from]; const b = constellation.stars[to]; if (!a || !b) return; ctx.beginPath(); ctx.moveTo(a[0] * width, a[1] * height); ctx.lineTo(b[0] * width, b[1] * height); ctx.stroke(); });
+        ctx.setLineDash([]);
+        constellation.stars.forEach(([x, y], index) => { const radius = 1.2 + 0.9 * (0.5 + 0.5 * Math.sin(time + index)); ctx.beginPath(); ctx.arc(x * width, y * height, radius, 0, Math.PI * 2); ctx.fillStyle = "rgba(200,220,255,0.3)"; ctx.fill(); });
+        const [labelX, labelY] = constellation.stars[0]; ctx.font = "7.5px 'Space Grotesk', monospace"; ctx.fillStyle = "rgba(160,190,255,0.16)"; ctx.fillText(constellation.name, labelX * width + 8, labelY * height - 6);
+      });
+      nextMeteor -= delta;
+      if (nextMeteor <= 0 && meteors.length < 3) { const angle = (0.12 + Math.random() * 0.35) * Math.PI; meteors.push({ x: Math.random() * width, y: Math.random() * height * 0.38, vx: Math.cos(angle), vy: Math.sin(angle), life: 0, maxLife: 1 + Math.random(), length: 70 + Math.random() * 100 }); nextMeteor = 4 + Math.random() * 5; }
+      meteors.forEach((meteor, index) => {
+        meteor.x += meteor.vx * 380 * delta; meteor.y += meteor.vy * 380 * delta; meteor.life += delta;
+        const alpha = Math.min(meteor.life / 0.16, (meteor.maxLife - meteor.life) / 0.28, 1) * 0.32;
+        const tailX = meteor.x - meteor.vx * meteor.length; const tailY = meteor.y - meteor.vy * meteor.length;
+        const gradient = ctx.createLinearGradient(tailX, tailY, meteor.x, meteor.y); gradient.addColorStop(0, "rgba(255,255,245,0)"); gradient.addColorStop(1, `rgba(210,230,255,${Math.max(alpha, 0)})`);
+        ctx.beginPath(); ctx.moveTo(tailX, tailY); ctx.lineTo(meteor.x, meteor.y); ctx.strokeStyle = gradient; ctx.lineWidth = 1; ctx.stroke();
+        if (meteor.life >= meteor.maxLife || meteor.x > width + 80 || meteor.y > height + 80) meteors.splice(index, 1);
+      });
+      const planetX = width * 0.88; const planetY = height * 0.18; const planetRadius = 14;
+      ctx.save(); ctx.translate(planetX, planetY); ctx.scale(1, 0.38); ctx.beginPath(); ctx.ellipse(0, 0, planetRadius * 2.4, planetRadius * 2.4, 0, 0, Math.PI * 2); ctx.strokeStyle = "rgba(240,200,120,0.13)"; ctx.lineWidth = 4; ctx.stroke(); ctx.restore();
+      const planet = ctx.createRadialGradient(planetX - 4, planetY - 4, 0, planetX, planetY, planetRadius); planet.addColorStop(0, "rgba(255,220,150,0.24)"); planet.addColorStop(1, "rgba(160,100,40,0.14)"); ctx.fillStyle = planet; ctx.beginPath(); ctx.arc(planetX, planetY, planetRadius, 0, Math.PI * 2); ctx.fill();
+      const cometAngle = time * 0.038; const cometX = width * 0.5 + Math.cos(cometAngle) * Math.min(width, height) * 0.34; const cometY = height * 0.5 + Math.sin(cometAngle * 0.68) * Math.min(width, height) * 0.15;
+      const tail = ctx.createLinearGradient(cometX, cometY, cometX - 50, cometY + 16); tail.addColorStop(0, "rgba(180,220,255,0.14)"); tail.addColorStop(1, "rgba(180,220,255,0)"); ctx.strokeStyle = tail; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(cometX, cometY); ctx.lineTo(cometX - 50, cometY + 16); ctx.stroke(); ctx.beginPath(); ctx.arc(cometX, cometY, 1.8, 0, Math.PI * 2); ctx.fillStyle = "rgba(240,250,255,0.55)"; ctx.fill();
+    };
+    let previous = performance.now();
+    const draw = (now: number) => {
+      const delta = Math.min((now - previous) / 1000, 0.05);
+      previous = now;
       time += 0.0028;
       const width = canvas.width;
       const height = canvas.height;
       ctx.clearRect(0, 0, width, height);
+
+      drawAstronomy(width, height, delta);
 
       const hills = [
         { x: width * (0.3 + 0.12 * Math.sin(time * 0.22)), y: height * (0.38 + 0.1 * Math.cos(time * 0.17)) },
@@ -132,7 +202,7 @@ export default function AdminBackground() {
       ctx.textAlign = "right"; ctx.fillText("WGS84 · UTM Zone 51N · ITRF2020", width - 12, height - 10); ctx.textAlign = "left";
       frame = requestAnimationFrame(draw);
     };
-    draw();
+    frame = requestAnimationFrame(draw);
     return () => { cancelAnimationFrame(frame); observer.disconnect(); };
   }, []);
 
