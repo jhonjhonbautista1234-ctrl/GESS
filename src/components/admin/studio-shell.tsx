@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, LogOut, Menu, Search, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/browser";
 import { adminNavigation } from "./navigation";
+import AdminBackground from "./admin-background";
 
 export default function StudioShell({ email, children }: { email: string; children: React.ReactNode }) {
   const pathname = usePathname();
@@ -35,6 +36,7 @@ export default function StudioShell({ email, children }: { email: string; childr
     } catch { setError("Could not sign out. Please try again."); setSigningOut(false); }
   }
   return <div className="studio-shell">
+    <AdminBackground />
     <a href="#studio-content" className="studio-skip">Skip to workspace</a>
     <header className="studio-topbar">
       <button className="studio-icon-button studio-menu-toggle" aria-label="Toggle navigation" aria-controls="studio-navigation" aria-expanded={railOpen} onClick={() => setRailOpen(!railOpen)}><Menu size={18} /></button>
