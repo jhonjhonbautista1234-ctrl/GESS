@@ -1,0 +1,139 @@
+/* Mobile-only composition. Desktop styles remain in style.css. */
+.mobile-topic-picker{display:none}
+
+/* A term and its meaning are one learning unit, on every screen size. */
+.study-card .study-card-heading{
+  display:block;
+  margin:0 0 22px;
+  padding:0 0 18px;
+  border-bottom:1px solid #1c3b50;
+}
+
+.study-card-topic{
+  margin:0 0 8px;
+  color:#8fa8b8;
+  font-size:15px;
+  line-height:1.5;
+}
+
+.study-card .study-card-heading h1{
+  margin:0;
+  font-size:clamp(30px,4vw,46px);
+  line-height:1.08;
+}
+
+@media(max-width:760px){
+  :root{
+    --mobile-gutter:clamp(14px,4.5vw,28px);
+    --mobile-card-padding:clamp(20px,5vw,30px);
+    --mobile-section-gap:clamp(20px,5vw,32px);
+  }
+
+  body{overflow-x:hidden}
+
+  #app{display:block}
+
+  aside{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    align-items:stretch;
+    gap:clamp(7px,2vw,10px);
+    width:100%;
+    height:auto;
+    position:static;
+    padding:clamp(10px,3vw,16px);
+    overflow:visible;
+    border-right:0;
+    border-bottom:1px solid #1b3044;
+    background:#07101ff5;
+    box-shadow:0 8px 22px #0207135c;
+  }
+
+  .brand{
+    grid-column:span 1;
+    align-self:center;
+    padding:8px 3px;
+    font-size:clamp(14px,3.7vw,17px);
+    line-height:.9;
+    white-space:normal;
+  }
+
+  .brand small{font-size:clamp(8px,2.1vw,10px);letter-spacing:clamp(1.4px,.45vw,2px)}
+
+  aside .lesson-active{
+    grid-column:span 2;
+    align-self:center;
+    margin:0;
+    padding:clamp(7px,2vw,10px) clamp(9px,2.6vw,13px);
+    font-size:clamp(13px,3.4vw,16px);
+    line-height:1.1;
+  }
+
+  .lesson-active small{margin-top:4px;font-size:clamp(9px,2.3vw,11px)}
+
+  aside .nav{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:44px;
+    width:100%;
+    margin:0;
+    padding:8px 5px;
+    white-space:normal;
+    text-align:center;
+    font-size:clamp(11px,2.8vw,13px);
+    line-height:1.18;
+  }
+
+  .side-note{display:none}
+
+  main{width:100%;max-width:680px;padding:var(--mobile-section-gap) var(--mobile-gutter) calc(var(--mobile-section-gap) + var(--mobile-section-gap));}
+  main>header{flex-direction:column;gap:12px;margin-bottom:var(--mobile-section-gap)}
+  main>header.learn-context{gap:10px;margin-bottom:clamp(14px,4vw,20px)}
+  h1{font-size:clamp(28px,8.5vw,42px);letter-spacing:-1.5px}
+  .eyebrow{font-size:clamp(10px,2.6vw,12px);line-height:1.45}
+  .muted{margin-bottom:0}
+  .dots{order:2}
+
+  .page-actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(8px,2.4vw,12px);
+    margin-bottom:var(--mobile-section-gap);
+  }
+
+  .page-actions button{min-height:46px;padding:8px 10px;font-size:clamp(12px,3vw,14px);line-height:1.2}
+
+  .study-card,.cover-card,.quiz-card,.flash{padding:var(--mobile-card-padding);border-radius:clamp(16px,4vw,22px)}
+  .study-card .study-card-heading{margin-bottom:clamp(18px,4vw,24px);padding-bottom:clamp(14px,3.5vw,20px)}
+  .study-card .study-card-heading h1{font-size:clamp(28px,8.5vw,42px);letter-spacing:-1.5px}
+  .study-card-topic{font-size:clamp(15px,3.9vw,18px)}
+  .definition{font-size:clamp(18px,4.8vw,23px);line-height:1.5}
+  .fact-list{margin:clamp(20px,5vw,28px) 0;font-size:clamp(15px,3.8vw,17px)}
+  .study-card footer>div{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2.4vw,12px);width:100%}
+  .study-card footer button{min-height:44px;margin:0;padding:10px 8px;font-size:clamp(12px,3vw,14px)}
+
+  .lesson-topics{margin-top:var(--mobile-section-gap)}
+  .lesson-topics h2{margin-bottom:12px;font-size:clamp(21px,5.5vw,27px)}
+  .mobile-topic-picker{display:grid;gap:7px}
+  .mobile-topic-picker label{color:#9ec6d3;font-size:clamp(12px,3vw,14px);font-weight:700}
+  .mobile-topic-picker select{
+    width:100%;
+    min-height:48px;
+    padding:10px 36px 10px 12px;
+    border:1px solid #2d6581;
+    border-radius:11px;
+    background:#10263a;
+    color:#e3f8ff;
+    font:600 clamp(14px,3.6vw,16px) Manrope;
+  }
+
+  .lesson-topics .chips{display:none}
+}
+
+/* A two-column mode keeps labels comfortably readable on very narrow phones. */
+@media(max-width:359px){
+  aside{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .brand,aside .lesson-active{grid-column:span 1}
+  aside .nav{min-height:46px}
+}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+tmp/
+page_*.txt
+tmp_visual-*.png
+*.log
+.DS_Store

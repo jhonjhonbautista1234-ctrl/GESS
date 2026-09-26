@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Survey Basics Game — Levelling, Topographic Survey & Traversing</title>
+<style>
+  :root{--bg:#0d1710;--panel:#14221a;--panel2:#1b2d22;--text:#edf7ef;--muted:#a9b9ae;--blue:#76d7a0;--green:#51cf66;--yellow:#d9f99d;--red:#ff7b7b;--line:#395043;--grid:#263b2d;--orange:#a3e635}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+  .wrap{max-width:1150px;margin:auto;padding:18px}.header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  h1{font-size:24px;margin:0}.sub{color:var(--muted);font-size:14px}.tabs{display:flex;gap:8px}.tabs button{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700}.tabs button.active{background:var(--blue);color:#07111a}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}.lesson{display:none}.lesson.active{display:block}.grid2{display:grid;grid-template-columns:370px 1fr;gap:14px}@media(max-width:850px){.grid2{grid-template-columns:1fr}}
+  .step{background:var(--panel2);border-radius:10px;padding:12px;margin-bottom:10px}.step h3{margin:0 0 8px;font-size:17px}.big{font-size:28px;font-weight:800;color:var(--yellow)}
+  label{display:block;font-size:13px;color:var(--muted);margin-top:8px}input,select{width:100%;padding:10px;border-radius:7px;border:1px solid var(--line);background:#0f141b;color:var(--text);margin-top:4px}button.main{width:100%;margin-top:10px;padding:11px;border:0;border-radius:8px;background:var(--green);color:#07130a;font-weight:800;cursor:pointer}.secondary{background:#2a3441!important;color:var(--text)!important;border:1px solid var(--line)!important}.contourBtn{background:var(--orange)!important;color:#1b0d00!important}
+  .message{margin-top:10px;padding:10px;border-radius:8px;background:#111820;border-left:4px solid var(--blue);min-height:44px;line-height:1.4}.good{border-left-color:var(--green)}.bad{border-left-color:var(--red)}
+  canvas{width:100%;height:500px;background:#0a0f14;border-radius:10px;border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:8px;text-align:center}th{color:var(--muted);font-size:12px}.tableWrap{overflow:auto;max-height:265px}
+  .tip{font-size:13px;color:var(--muted);line-height:1.5}.formula{font-family:Consolas,monospace;background:#0f141b;padding:8px;border-radius:7px;margin:6px 0}.score{background:var(--panel);border:1px solid var(--line);padding:8px 12px;border-radius:8px;font-weight:700}.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}.lineKey{display:inline-block;width:22px;height:0;border-top:2px solid var(--orange);vertical-align:middle;margin-right:5px}.twoCols{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mini{font-size:12px;color:var(--muted);margin-top:5px}.badge{display:inline-block;background:#0f141b;border:1px solid var(--line);padding:4px 7px;border-radius:999px;font-size:12px;color:var(--muted);margin-top:6px}
+  .progressTrack{height:9px;background:#0f141b;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:8px 0 5px}.progressFill{height:100%;width:0;background:var(--green);transition:width .25s ease}.progressText{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}.sightBadge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800;margin:2px 4px 2px 0}.bsBadge{background:rgba(81,207,102,.16);color:#8ce99a;border:1px solid rgba(81,207,102,.45)}.isBadge{background:rgba(255,212,59,.13);color:#ffe066;border:1px solid rgba(255,212,59,.45)}.fsBadge{background:rgba(255,107,107,.14);color:#ffa8a8;border:1px solid rgba(255,107,107,.45)}.calcBadge{background:rgba(77,171,247,.14);color:#74c0fc;border:1px solid rgba(77,171,247,.45)}.levelStats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}.statBox{background:#0f141b;border:1px solid var(--line);border-radius:8px;padding:9px}.statBox b{display:block;font-size:15px;margin-top:3px}.checkPanel{background:#0f141b;border:1px solid var(--line);border-radius:9px;padding:10px;margin-top:10px}.checkRow{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-family:Consolas,monospace;font-size:12px}.pass{color:var(--green);font-weight:800}.pending{color:var(--muted)}.hintBox{display:none;margin-top:8px;padding:9px;border-radius:8px;background:#111820;border:1px dashed #4c5b6b;color:#c8d1dc;font-size:13px;line-height:1.45}.hintBox.show{display:block}.levLegend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted)}.levLegend span{white-space:nowrap}
+
+  .modeBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.modeBtns button{padding:10px;border-radius:8px;border:1px solid var(--line);background:#111820;color:var(--text);cursor:pointer;font-weight:800}.modeBtns button.active{background:var(--blue);color:#07111a}
+  .summaryGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}.summaryBox{background:#0f141b;border:1px solid var(--line);border-radius:8px;padding:9px}.summaryBox span{display:block;font-size:11px;color:var(--muted);margin-bottom:3px}.summaryBox b{font-family:Consolas,monospace;font-size:15px}
+  .conceptBox{background:#111820;border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;line-height:1.45}.greenText{color:var(--green)}.redText{color:var(--red)}.blueText{color:var(--blue)}
+
+  /* GESS green palette overrides. These affect appearance only. */
+  .tabs button.active,.modeBtns button.active{color:#0b180f}
+  input,select,.formula,.badge,.progressTrack,.statBox,.checkPanel,.summaryBox{background:#101a13}
+  .secondary{background:#23352a!important}.message,.conceptBox,.hintBox{background:#17241b}.hintBox{border-color:#52705c;color:#d4e2d7}
+  canvas{background:#0b130e}.calcBadge{background:rgba(118,215,160,.14);color:#a8e6bb;border-color:rgba(118,215,160,.45)}
+  .dot[style*="#4dabf7"]{background:var(--blue)!important}.lineKey[style*="#edf2f7"]{border-color:var(--text)!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div><h1>Survey Basics Game</h1><div class="sub">Beginner practice for Levelling, Topographic Survey and Traversing</div></div>
+    <div class="score">Score: <span id="score">0</span></div>
+  </div>
+  <div class="tabs">
+    <button id="tabLevel" class="active" onclick="showLesson('level')">1. Levelling</button>
+    <button id="tabTopo" onclick="showLesson('topo')">2. Topographic Survey</button>
+    <button id="tabTraverse" onclick="showLesson('traverse')">3. Traversing</button>
+  </div>
+
+  <section id="level" class="lesson active card">
+    <div class="grid2">
+      <div>
+        <div class="step">
+          <h3>Mission — Run a Level Line</h3>
+          <div class="tip">Start from known benchmark <b>BM1 = 100.000 m</b>, determine elevations of A, TP1 and B, then close on known benchmark <b>BM2 = 98.780 m</b>.</div>
+          <div class="progressTrack"><div id="levProgress" class="progressFill"></div></div>
+          <div class="progressText"><span id="levProgressText">Step 1 of 13</span><span id="levSetupText">Instrument Setup 1 of 2</span></div>
+        </div>
+        <div class="step">
+          <div id="levSightBadge" class="sightBadge bsBadge">BS — BACKSIGHT</div>
+          <h3 id="levStepTitle">Step 1 — Backsight on BM1</h3>
+          <div id="levInstruction" class="tip"></div>
+          <label id="levInputLabel">Enter answer (m)</label>
+          <input id="levInput" type="number" step="0.001" placeholder="Enter to 0.001 m" />
+          <button class="main" onclick="checkLevelling()">Check Answer</button>
+          <button class="main secondary" onclick="showLevHint()">Show Hint</button>
+          <button class="main secondary" onclick="resetLevelling()">Restart Levelling</button>
+          <div id="levHint" class="hintBox"></div>
+          <div id="levMessage" class="message"></div>
+        </div>
+        <div class="step">
+          <h3>Levelling Rules</h3>
+          <div><span class="sightBadge bsBadge">BS</span><span class="tip">first reading after setting up the level</span></div>
+          <div><span class="sightBadge isBadge">IS</span><span class="tip">reading to an intermediate point while the instrument stays put</span></div>
+          <div><span class="sightBadge fsBadge">FS</span><span class="tip">last reading before moving the instrument</span></div>
+          <div class="formula">HI = RL + BS</div>
+          <div class="formula">RL = HI − IS &nbsp;or&nbsp; HI − FS</div>
+          <div class="formula">Misclosure = Computed closing RL − Known closing RL</div>
+        </div>
+      </div>
+      <div>
+        <canvas id="levCanvas" width="700" height="460"></canvas>
+        <div class="levLegend"><span><span class="dot" style="background:#51cf66"></span>BS</span><span><span class="dot" style="background:#ffd43b"></span>IS</span><span><span class="dot" style="background:#ff6b6b"></span>FS</span><span><span class="dot" style="background:#4dabf7"></span>Level</span></div>
+        <div class="tableWrap" style="max-height:300px">
+          <table><thead><tr><th>Point</th><th>BS</th><th>IS</th><th>FS</th><th>HI</th><th>RL</th><th>Remarks</th></tr></thead><tbody id="levTable"></tbody></table>
+        </div>
+        <div id="levCheckPanel" class="checkPanel"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="topo" class="lesson card">
+    <div class="grid2">
+      <div>
+        <div class="step">
+          <h3>Goal</h3>
+          <div class="tip">Plot survey points around TS1. Give every point a measured elevation (RL). When you have enough points, generate contours from those elevations.</div>
+          <span class="badge">Minimum: 3 non-collinear points</span>
+        </div>
+        <div class="step">
+          <h3>Take a Topographic Shot</h3>
+          <div class="twoCols">
+            <div><label>Horizontal Distance (m)</label><input id="dist" type="number" value="30" min="1" max="100" step="0.1" /></div>
+            <div><label>Azimuth (° from North)</label><input id="az" type="number" value="45" min="0" max="359.9" step="0.1" /></div>
+          </div>
+          <label>Point Elevation / RL (m)</label><input id="pointRL" type="number" value="101.20" step="0.01" />
+          <label>Feature</label><select id="feature"><option>Ground</option><option>Tree</option><option>Road</option><option>Building</option><option>Drain</option></select>
+          <button class="main" onclick="takeShot()">Plot Point</button>
+          <button class="main secondary" onclick="randomShot()">Random Practice Shot</button>
+          <button class="main secondary" onclick="loadContourExample()">Load Example Terrain</button>
+          <div id="topoMessage" class="message"></div>
+        </div>
+        <div class="step">
+          <h3>Generate Contours</h3>
+          <label>Contour Interval (m)</label><input id="contourInterval" type="number" value="1" min="0.1" step="0.1" />
+          <button class="main contourBtn" onclick="generateContours()">Generate Contours</button>
+          <button class="main secondary" onclick="clearContours()">Hide Contours</button>
+          <button class="main secondary" onclick="resetTopo()">Clear Map</button>
+          <div class="tip" style="margin-top:8px"><b>Method:</b> points are joined into a Delaunay Triangulated Irregular Network (TIN). Each contour is found by linear interpolation along triangle edges. Contours are only drawn inside the surveyed TIN.</div>
+        </div>
+        <div class="step">
+          <h3>Coordinate Computation</h3>
+          <div class="formula">ΔE = D × sin(Az)</div><div class="formula">ΔN = D × cos(Az)</div>
+          <div class="tip">Station TS1: E = 5000.000 m, N = 5000.000 m. Elevation is entered directly from your topographic observation.</div>
+        </div>
+      </div>
+      <div>
+        <canvas id="topoCanvas" width="740" height="500"></canvas>
+        <div class="legend"><span><span class="dot" style="background:#4dabf7"></span>Total Station</span><span><span class="dot" style="background:#51cf66"></span>Survey Point + RL</span><span><span class="lineKey"></span>Interpolated Contour</span></div>
+        <div class="tableWrap">
+          <table><thead><tr><th>Pt</th><th>D</th><th>Az</th><th>E</th><th>N</th><th>RL / Height</th><th>Feature</th></tr></thead><tbody id="topoTable"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="traverse" class="lesson card">
+    <div class="grid2">
+      <div>
+        <div class="step">
+          <h3>Traverse Type</h3>
+          <div class="modeBtns">
+            <button id="openBtn" class="active" onclick="setTraverseMode('open')">Open Traverse</button>
+            <button id="closedBtn" onclick="setTraverseMode('closed')">Closed Traverse</button>
+          </div>
+          <div id="travConcept" class="conceptBox"></div>
+        </div>
+
+        <div class="step">
+          <h3>Add a Traverse Leg</h3>
+          <div class="tip">Assume the total station is centered over the current station. Enter the measured horizontal distance and azimuth of the next line.</div>
+          <div class="twoCols">
+            <div><label>Horizontal Distance (m)</label><input id="travDist" type="number" value="40" min="0.001" step="0.001"></div>
+            <div><label>Azimuth (° from North)</label><input id="travAz" type="number" value="45" min="0" max="359.9999" step="0.0001"></div>
+          </div>
+          <button class="main" onclick="addTraverseLeg()">Observe & Plot Next Station</button>
+          <button class="main secondary" onclick="loadTraverseExample()">Load Practice Example</button>
+          <button class="main secondary" onclick="undoTraverseLeg()">Undo Last Leg</button>
+          <button class="main secondary" onclick="resetTraverse()">Restart Traverse</button>
+          <div id="travMessage" class="message"></div>
+        </div>
+
+        <div class="step">
+          <h3>Surveying Computation</h3>
+          <div class="formula">ΔE = D × sin(Az)</div>
+          <div class="formula">ΔN = D × cos(Az)</div>
+          <div class="formula">E₂ = E₁ + ΔE &nbsp;&nbsp; N₂ = N₁ + ΔN</div>
+          <div class="tip">Azimuth is measured clockwise from North. The game starts at <b>Station A: E = 1000.000 m, N = 1000.000 m</b>.</div>
+        </div>
+
+        <div id="closureTools" class="step" style="display:none">
+          <h3>Closed-Traverse Check</h3>
+          <button class="main contourBtn" onclick="checkTraverseClosure()">Check Closure</button>
+          <button class="main secondary" onclick="applyBowditch()">Apply Bowditch Adjustment</button>
+          <div id="travClosureSummary" class="checkPanel"></div>
+          <div class="tip" style="margin-top:8px"><b>Compass/Bowditch Rule:</b> distribute Easting and Northing misclosure to each line in proportion to that line's length.</div>
+        </div>
+      </div>
+
+      <div>
+        <canvas id="travCanvas" width="740" height="500"></canvas>
+        <div class="legend">
+          <span><span class="dot" style="background:#4dabf7"></span>Starting Control</span>
+          <span><span class="dot" style="background:#51cf66"></span>Traverse Station</span>
+          <span><span class="lineKey" style="border-color:#edf2f7"></span>Observed Traverse</span>
+          <span><span class="lineKey" style="border-color:#ffd43b"></span>Adjusted Traverse</span>
+        </div>
+        <div class="summaryGrid">
+          <div class="summaryBox"><span>Current Station</span><b id="travCurrent">A</b></div>
+          <div class="summaryBox"><span>Total Length</span><b id="travLength">0.000 m</b></div>
+          <div class="summaryBox"><span>ΣΔE</span><b id="travSumE">0.000 m</b></div>
+          <div class="summaryBox"><span>ΣΔN</span><b id="travSumN">0.000 m</b></div>
+        </div>
+        <div class="tableWrap" style="max-height:310px">
+          <table>
+            <thead><tr><th>Line</th><th>D (m)</th><th>Az</th><th>ΔE</th><th>ΔN</th><th>End E</th><th>End N</th></tr></thead>
+            <tbody id="travTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+let score=0; function addScore(n){score+=n;document.getElementById('score').textContent=score}
+function showLesson(which){
+ document.querySelectorAll('.lesson').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+ document.getElementById(which).classList.add('active');
+ const tabId=which==='level'?'tabLevel':which==='topo'?'tabTopo':'tabTraverse';
+ document.getElementById(tabId).classList.add('active');
+ if(which==='level')drawLevelling(); else if(which==='topo')drawTopo(); else drawTraverse();
+}
+
+// ----- LEVELLING -----
+const levData={
+  BM1:100.000, BM2Known:98.780,
+  bs1:1.325, isA:1.860, fsTP:2.115,
+  bs2:0.955, isB:1.440, fsBM2:1.390,
+  hi1:101.325, rlA:99.465, rlTP:99.210,
+  hi2:100.165, rlB:98.725, rlBM2:98.775, misclosure:-0.005
+};
+const levSteps=[
+ {kind:'BS',setup:1,target:'BM1',title:'Backsight on BM1',label:'BS reading on BM1 (m)',expected:1.325,instruction:'The level is set up for the first time. Read the highlighted staff on the known benchmark BM1.',hint:'A backsight is the FIRST reading after setup. Read the green staff value shown on BM1.',ok:'Correct. BS on BM1 = 1.325 m.'},
+ {kind:'CALC',setup:1,target:'BM1',title:'Compute Height of Instrument',label:'HI for Setup 1 (m)',expected:101.325,instruction:'Now compute the elevation of the line of sight for Setup 1.',hint:'Use HI = RL + BS = 100.000 + 1.325.',ok:'Correct. HI₁ = 101.325 m.'},
+ {kind:'IS',setup:1,target:'A',title:'Intermediate Sight on A',label:'IS reading on A (m)',expected:1.860,instruction:'Without moving the instrument, observe point A. This is an Intermediate Sight (IS).',hint:'An IS is neither the first nor last reading of the setup. Read the yellow staff value on A.',ok:'Correct. IS on A = 1.860 m.'},
+ {kind:'CALC',setup:1,target:'A',title:'Compute RL of A',label:'RL of A (m)',expected:99.465,instruction:'Use the Setup 1 HI and the intermediate-sight reading to find the elevation of A.',hint:'RL(A) = HI₁ − IS(A) = 101.325 − 1.860.',ok:'Correct. RL(A) = 99.465 m.'},
+ {kind:'FS',setup:1,target:'TP1',title:'Foresight on Turning Point TP1',label:'FS reading on TP1 (m)',expected:2.115,instruction:'TP1 is the last point observed before moving the instrument, so this reading is a Foresight.',hint:'A foresight is the LAST reading before moving the level. Read the red staff value on TP1.',ok:'Correct. FS on TP1 = 2.115 m.'},
+ {kind:'CALC',setup:1,target:'TP1',title:'Compute RL of TP1',label:'RL of TP1 (m)',expected:99.210,instruction:'Determine the turning-point elevation before moving the level.',hint:'RL(TP1) = HI₁ − FS(TP1) = 101.325 − 2.115.',ok:'Correct. RL(TP1) = 99.210 m.'},
+ {kind:'BS',setup:2,target:'TP1',title:'Move Level — Backsight on TP1',label:'New BS reading on TP1 (m)',expected:0.955,instruction:'The level has moved to Setup 2. TP1 keeps its computed RL and now becomes the backsight point.',hint:'After moving the instrument, the first reading must be a BS. Read the green staff value on TP1.',ok:'Correct. New BS on TP1 = 0.955 m.'},
+ {kind:'CALC',setup:2,target:'TP1',title:'Compute New Height of Instrument',label:'HI for Setup 2 (m)',expected:100.165,instruction:'Use the known RL of TP1 to establish the new line of sight.',hint:'HI₂ = RL(TP1) + BS(TP1) = 99.210 + 0.955.',ok:'Correct. HI₂ = 100.165 m.'},
+ {kind:'IS',setup:2,target:'B',title:'Intermediate Sight on B',label:'IS reading on B (m)',expected:1.440,instruction:'Observe point B without moving the instrument. This is another Intermediate Sight.',hint:'Read the yellow staff value on point B.',ok:'Correct. IS on B = 1.440 m.'},
+ {kind:'CALC',setup:2,target:'B',title:'Compute RL of B',label:'RL of B (m)',expected:98.725,instruction:'Use the Setup 2 HI and the IS on B.',hint:'RL(B) = HI₂ − IS(B) = 100.165 − 1.440.',ok:'Correct. RL(B) = 98.725 m.'},
+ {kind:'FS',setup:2,target:'BM2',title:'Foresight on Closing Benchmark BM2',label:'FS reading on BM2 (m)',expected:1.390,instruction:'BM2 is the final observation. Because the instrument will not be used again, this is a Foresight.',hint:'Read the red staff value on BM2.',ok:'Correct. FS on BM2 = 1.390 m.'},
+ {kind:'CALC',setup:2,target:'BM2',title:'Compute Closing RL of BM2',label:'Computed RL of BM2 (m)',expected:98.775,instruction:'Compute BM2 from your observations before comparing it with its known elevation.',hint:'Computed RL(BM2) = HI₂ − FS(BM2) = 100.165 − 1.390.',ok:'Correct. Computed BM2 RL = 98.775 m.'},
+ {kind:'CHECK',setup:2,target:'BM2',title:'Compute Levelling Misclosure',label:'Misclosure (m; include sign)',expected:-0.005,instruction:'Known BM2 RL is 98.780 m. Compare your computed closing RL with the known value.',hint:'Misclosure = Computed closing RL − Known closing RL = 98.775 − 98.780. A negative value means the computed RL closed low.',ok:'Correct. Misclosure = −0.005 m, or 5 mm low.'}
+];
+let levStep=0, levBook={};
+function blankLevBook(){return{
+ BM1:{p:'BM1',bs:'—',is:'—',fs:'—',hi:'—',rl:'100.000',remarks:'Known benchmark'},
+ A:{p:'A',bs:'—',is:'—',fs:'—',hi:'—',rl:'—',remarks:'Intermediate point'},
+ TP1:{p:'TP1',bs:'—',is:'—',fs:'—',hi:'—',rl:'—',remarks:'Turning point'},
+ B:{p:'B',bs:'—',is:'—',fs:'—',hi:'—',rl:'—',remarks:'Intermediate point'},
+ BM2:{p:'BM2',bs:'—',is:'—',fs:'—',hi:'—',rl:'—',remarks:'Known RL 98.780'}
+};}
+function resetLevelling(){
+ levStep=0;levBook=blankLevBook();document.getElementById('levInput').value='';document.getElementById('levInput').disabled=false;
+ document.getElementById('levMessage').textContent='Begin at BM1. Read the highlighted staff and work through one observation at a time.';
+ document.getElementById('levMessage').className='message';document.getElementById('levHint').className='hintBox';
+ updateLevUI();renderLevTable();renderLevChecks();drawLevelling();
+}
+function levBadgeClass(kind){return kind==='BS'?'sightBadge bsBadge':kind==='IS'?'sightBadge isBadge':kind==='FS'?'sightBadge fsBadge':'sightBadge calcBadge';}
+function updateLevUI(){
+ const title=document.getElementById('levStepTitle'),ins=document.getElementById('levInstruction'),lab=document.getElementById('levInputLabel'),badge=document.getElementById('levSightBadge');
+ const progress=document.getElementById('levProgress'),ptext=document.getElementById('levProgressText'),setupText=document.getElementById('levSetupText');
+ if(levStep>=levSteps.length){
+   title.textContent='Levelling Run Complete';ins.innerHTML='You completed a two-setup differential levelling run, including intermediate sights, a turning point, a closing benchmark and an arithmetic check.';lab.textContent='Completed';
+   badge.textContent='✓ COMPLETE';badge.className='sightBadge bsBadge';document.getElementById('levInput').disabled=true;progress.style.width='100%';ptext.textContent='13 of 13 steps completed';setupText.textContent='Closed on BM2';return;
+ }
+ const st=levSteps[levStep];title.textContent=`Step ${levStep+1} — ${st.title}`;ins.innerHTML=st.instruction;lab.textContent=st.label;badge.className=levBadgeClass(st.kind);
+ badge.textContent=st.kind==='CALC'?'CALCULATION':st.kind==='CHECK'?'CLOSURE CHECK':`${st.kind} — ${st.kind==='BS'?'BACKSIGHT':st.kind==='IS'?'INTERMEDIATE SIGHT':'FORESIGHT'}`;
+ progress.style.width=`${(levStep/levSteps.length)*100}%`;ptext.textContent=`Step ${levStep+1} of ${levSteps.length}`;setupText.textContent=`Instrument Setup ${st.setup} of 2`;
+ document.getElementById('levInput').disabled=false;document.getElementById('levHint').className='hintBox';document.getElementById('levHint').textContent='';
+}
+function showLevHint(){if(levStep>=levSteps.length)return;const h=document.getElementById('levHint');h.textContent=levSteps[levStep].hint;h.className='hintBox show';}
+function checkLevelling(){
+ if(levStep>=levSteps.length)return;const v=parseFloat(document.getElementById('levInput').value),m=document.getElementById('levMessage');
+ if(Number.isNaN(v)){m.textContent='Enter a number first.';m.className='message bad';return;}
+ const st=levSteps[levStep],tol=0.0011;
+ if(Math.abs(v-st.expected)<=tol){
+   m.textContent=st.ok;m.className='message good';addScore(st.kind==='CALC'||st.kind==='CHECK'?15:10);recordLevStep(levStep);levStep++;document.getElementById('levInput').value='';updateLevUI();renderLevTable();renderLevChecks();drawLevelling();
+   if(levStep>=levSteps.length){m.innerHTML='<b>Excellent.</b> Your field book closes arithmetically, and the observed benchmark misclosure is −0.005 m (5 mm low).';m.className='message good';}
+ }else{
+   const dir=v>st.expected?'high':'low';m.textContent=`Not quite — your value is too ${dir}. Check the highlighted observation or use the hint.`;m.className='message bad';
+ }
+}
+function recordLevStep(i){
+ switch(i){
+  case 0:levBook.BM1.bs='1.325';break; case 1:levBook.BM1.hi='101.325';break;
+  case 2:levBook.A.is='1.860';break; case 3:levBook.A.rl='99.465';break;
+  case 4:levBook.TP1.fs='2.115';break; case 5:levBook.TP1.rl='99.210';break;
+  case 6:levBook.TP1.bs='0.955';break; case 7:levBook.TP1.hi='100.165';break;
+  case 8:levBook.B.is='1.440';break; case 9:levBook.B.rl='98.725';break;
+  case 10:levBook.BM2.fs='1.390';break; case 11:levBook.BM2.rl='98.775';break;
+ }
+}
+function renderLevTable(){
+ const order=['BM1','A','TP1','B','BM2'];document.getElementById('levTable').innerHTML=order.map(k=>{const r=levBook[k];return`<tr><td><b>${r.p}</b></td><td>${r.bs}</td><td>${r.is}</td><td>${r.fs}</td><td>${r.hi}</td><td>${r.rl}</td><td>${r.remarks}</td></tr>`}).join('');
+}
+function renderLevChecks(){
+ const done=levStep>=levSteps.length;const p=document.getElementById('levCheckPanel');
+ if(!done){p.innerHTML='<div class="tip"><b>Field-book check</b> will appear after you close on BM2.</div><div class="checkRow"><span>ΣBS − ΣFS</span><span class="pending">pending</span></div><div class="checkRow"><span>Last RL − First RL</span><span class="pending">pending</span></div><div class="checkRow"><span>Benchmark misclosure</span><span class="pending">pending</span></div>';return;}
+ const sumBS=levData.bs1+levData.bs2,sumFS=levData.fsTP+levData.fsBM2,diff=sumBS-sumFS,rlDiff=levData.rlBM2-levData.BM1;
+ p.innerHTML=`<div class="tip"><b>Completed field-book checks</b></div>
+ <div class="checkRow"><span>ΣBS</span><span>${sumBS.toFixed(3)} m</span></div>
+ <div class="checkRow"><span>ΣFS</span><span>${sumFS.toFixed(3)} m</span></div>
+ <div class="checkRow"><span>ΣBS − ΣFS</span><span>${diff.toFixed(3)} m</span></div>
+ <div class="checkRow"><span>Last computed RL − First RL</span><span>${rlDiff.toFixed(3)} m</span></div>
+ <div class="checkRow"><span>Arithmetic check</span><span class="pass">PASS ✓</span></div>
+ <div class="checkRow"><span>Computed BM2 − Known BM2</span><span>${levData.misclosure.toFixed(3)} m</span></div>
+ <div class="tip" style="margin-top:7px">The run closes <b>5 mm low</b>. Whether that is acceptable depends on the levelling specification and run length used in your course/project.</div>`;
+}
+function drawLevelling(){
+ const c=document.getElementById('levCanvas'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.fillStyle='#0a0f14';x.fillRect(0,0,c.width,c.height);
+ x.strokeStyle='#26313d';x.lineWidth=1;for(let i=0;i<c.width;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,c.height);x.stroke()}for(let j=0;j<c.height;j+=40){x.beginPath();x.moveTo(0,j);x.lineTo(c.width,j);x.stroke()}
+ const points={BM1:{x:65,y:345,rl:100.000},A:{x:210,y:360,rl:99.465},TP1:{x:350,y:370,rl:99.210},B:{x:500,y:383,rl:98.725},BM2:{x:640,y:388,rl:98.780}};
+ // ground profile
+ x.strokeStyle='#718096';x.lineWidth=3;x.beginPath();x.moveTo(points.BM1.x,points.BM1.y);['A','TP1','B','BM2'].forEach(k=>x.lineTo(points[k].x,points[k].y));x.stroke();
+ // points and labels
+ x.font='12px Arial';x.textAlign='center';Object.entries(points).forEach(([k,p])=>{x.fillStyle='#cbd5e1';x.beginPath();x.arc(p.x,p.y,5,0,Math.PI*2);x.fill();x.fillStyle='#edf2f7';x.fillText(k,p.x,p.y+20);const known=k==='BM1'||k==='BM2';if(known){x.fillStyle='#9ba8b6';x.fillText(`known RL ${p.rl.toFixed(3)}`,p.x,p.y+36);}});
+ const active=levStep<levSteps.length?levSteps[levStep]:levSteps[levSteps.length-1],setup=active.setup||2;
+ const inst=setup===1?{x:135,y:228,lineY:252}:{x:430,y:248,lineY:270};
+ // instrument tripod
+ x.strokeStyle='#4dabf7';x.lineWidth=3;x.beginPath();x.moveTo(inst.x,inst.y);x.lineTo(inst.x-25,inst.y+92);x.moveTo(inst.x,inst.y);x.lineTo(inst.x+25,inst.y+92);x.moveTo(inst.x,inst.y);x.lineTo(inst.x,inst.y+92);x.stroke();x.fillStyle='#4dabf7';x.fillRect(inst.x-25,inst.y-12,50,18);x.fillStyle='#edf2f7';x.fillText(`LEVEL — SETUP ${setup}`,inst.x,inst.y-20);
+ const sightKeys=setup===1?['BM1','A','TP1']:['TP1','B','BM2'];const readVals=setup===1?{BM1:['BS','1.325','#51cf66'],A:['IS','1.860','#ffd43b'],TP1:['FS','2.115','#ff6b6b']}:{TP1:['BS','0.955','#51cf66'],B:['IS','1.440','#ffd43b'],BM2:['FS','1.390','#ff6b6b']};
+ // horizontal line of sight
+ x.save();x.setLineDash([7,5]);x.strokeStyle='#4dabf7';x.lineWidth=1.5;x.beginPath();x.moveTo(points[sightKeys[0]].x-18,inst.lineY);x.lineTo(points[sightKeys[2]].x+18,inst.lineY);x.stroke();x.restore();x.fillStyle='#74c0fc';x.fillText('horizontal line of sight',inst.x+78,inst.lineY-8);
+ sightKeys.forEach(k=>{
+   const p=points[k],rv=readVals[k],isTarget=active.target===k && ['BS','IS','FS'].includes(active.kind);x.strokeStyle=rv[2];x.lineWidth=isTarget?5:2;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x,inst.lineY-5);x.stroke();
+   // staff graduations
+   x.strokeStyle='#e9ecef';x.lineWidth=1;for(let yy=p.y-8;yy>inst.lineY;yy-=10){x.beginPath();x.moveTo(p.x-5,yy);x.lineTo(p.x+5,yy);x.stroke()}
+   if(isTarget){x.fillStyle=rv[2];x.font='bold 14px Arial';x.fillText(`${rv[0]} ${rv[1]} m`,p.x,inst.lineY-14);x.strokeStyle=rv[2];x.lineWidth=2;x.strokeRect(p.x-18,inst.lineY-35,36,Math.max(42,p.y-inst.lineY+35));x.font='12px Arial';}
+ });
+ if(['CALC','CHECK'].includes(active.kind)){
+   const p=points[active.target];x.strokeStyle='#ffd43b';x.lineWidth=3;x.beginPath();x.arc(p.x,p.y,13,0,Math.PI*2);x.stroke();x.fillStyle='#ffd43b';x.font='bold 12px Arial';x.fillText(active.kind==='CHECK'?'compare with known BM2':'compute here',p.x,p.y-18);x.font='12px Arial';
+ }
+ // setup transition arrow
+ if(setup===2){x.fillStyle='#9ba8b6';x.textAlign='left';x.fillText('Instrument moved after FS on TP1',285,35);x.textAlign='center';}
+}
+
+// ----- TOPOGRAPHIC SURVEY + TIN CONTOURS -----
+let topoPts=[];
+let contourSegments=[];
+let tinTriangles=[];
+let contoursVisible=false;
+const station={E:5000,N:5000};
+
+function resetTopo(){topoPts=[];contourSegments=[];tinTriangles=[];contoursVisible=false;document.getElementById('topoTable').innerHTML='';const m=document.getElementById('topoMessage');m.textContent='TS1 is at E=5000.000 m, N=5000.000 m. Plot points with elevations, then generate contours.';m.className='message';drawTopo();}
+function clearContours(){contourSegments=[];tinTriangles=[];contoursVisible=false;const m=document.getElementById('topoMessage');m.textContent='Contours hidden. Your surveyed points are unchanged.';m.className='message';drawTopo();}
+
+function takeShot(){
+ const D=parseFloat(document.getElementById('dist').value),A=parseFloat(document.getElementById('az').value),RL=parseFloat(document.getElementById('pointRL').value),F=document.getElementById('feature').value,m=document.getElementById('topoMessage');
+ if([D,A,RL].some(Number.isNaN)||D<=0||A<0||A>=360){m.textContent='Enter a valid distance, azimuth from 0° to less than 360°, and point elevation.';m.className='message bad';return;}
+ const r=A*Math.PI/180,dE=D*Math.sin(r),dN=D*Math.cos(r),E=station.E+dE,N=station.N+dN;
+ if(topoPts.some(p=>Math.hypot(p.E-E,p.N-N)<0.01)){m.textContent='A point already exists at almost the same plan position. Use a different distance or azimuth.';m.className='message bad';return;}
+ const p={id:topoPts.length+1,D,A,E,N,RL,F};topoPts.push(p);contoursVisible=false;contourSegments=[];tinTriangles=[];
+ m.innerHTML=`P${p.id} plotted at E <b>${E.toFixed(3)}</b>, N <b>${N.toFixed(3)}</b>, with elevation <b>${RL.toFixed(3)} m</b>.`;
+ m.className='message good';addScore(10);renderTopoTable();drawTopo();
+}
+function randomShot(){document.getElementById('dist').value=(18+Math.random()*52).toFixed(1);document.getElementById('az').value=(Math.random()*360).toFixed(1);document.getElementById('pointRL').value=(98+Math.random()*7).toFixed(2);const opts=['Ground','Tree','Road','Building','Drain'];document.getElementById('feature').value=opts[Math.floor(Math.random()*opts.length)];document.getElementById('topoMessage').textContent='Practice values loaded. Change any value if you want, then press Plot Point.';}
+function loadContourExample(){
+ const raw=[
+  [-55,-35,98.4],[-20,-45,99.1],[18,-42,100.4],[52,-30,101.0],
+  [-62,-5,99.0],[-28,-10,100.2],[5,-8,102.0],[38,-4,103.0],[64,4,102.1],
+  [-52,25,99.7],[-18,22,101.3],[14,25,103.4],[45,28,104.1],
+  [-35,50,100.4],[0,48,102.5],[33,52,103.2]
+ ];
+ topoPts=raw.map((q,i)=>{const E=station.E+q[0],N=station.N+q[1],D=Math.hypot(q[0],q[1]),A=(Math.atan2(q[0],q[1])*180/Math.PI+360)%360;return{id:i+1,D,A,E,N,RL:q[2],F:'Ground'}});
+ contoursVisible=false;contourSegments=[];tinTriangles=[];renderTopoTable();drawTopo();const m=document.getElementById('topoMessage');m.textContent='Example terrain loaded with 16 surveyed elevations. Press Generate Contours.';m.className='message good';
+}
+function renderTopoTable(){document.getElementById('topoTable').innerHTML=topoPts.map(p=>`<tr><td>P${p.id}</td><td>${p.D.toFixed(1)}</td><td>${p.A.toFixed(1)}°</td><td>${p.E.toFixed(2)}</td><td>${p.N.toFixed(2)}</td><td><b>${p.RL.toFixed(2)}</b></td><td>${p.F}</td></tr>`).join('');}
+
+// Bowyer-Watson Delaunay triangulation.
+function circumcircle(a,b,c){
+ const ax=a.x,ay=a.y,bx=b.x,by=b.y,cx=c.x,cy=c.y;
+ const d=2*(ax*(by-cy)+bx*(cy-ay)+cx*(ay-by));
+ if(Math.abs(d)<1e-12)return null;
+ const a2=ax*ax+ay*ay,b2=bx*bx+by*by,c2=cx*cx+cy*cy;
+ const ux=(a2*(by-cy)+b2*(cy-ay)+c2*(ay-by))/d;
+ const uy=(a2*(cx-bx)+b2*(ax-cx)+c2*(bx-ax))/d;
+ const r2=(ux-ax)*(ux-ax)+(uy-ay)*(uy-ay);
+ return{x:ux,y:uy,r2};
+}
+function pointInCircumcircle(p,t,pts){const cc=circumcircle(pts[t.a],pts[t.b],pts[t.c]);if(!cc)return false;const d2=(p.x-cc.x)*(p.x-cc.x)+(p.y-cc.y)*(p.y-cc.y);return d2<=cc.r2+1e-9;}
+function delaunay(points){
+ if(points.length<3)return[];
+ let minX=points[0].x,maxX=points[0].x,minY=points[0].y,maxY=points[0].y;
+ points.forEach(p=>{minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y)});
+ const dx=maxX-minX,dy=maxY-minY,delta=Math.max(dx,dy)||1,midx=(minX+maxX)/2,midy=(minY+maxY)/2;
+ const pts=points.map(p=>({...p}));
+ const s0=pts.length,s1=s0+1,s2=s0+2;
+ pts.push({x:midx-20*delta,y:midy-20*delta},{x:midx,y:midy+20*delta},{x:midx+20*delta,y:midy-20*delta});
+ let tris=[{a:s0,b:s1,c:s2}];
+ for(let i=0;i<points.length;i++){
+   const bad=[];for(let j=0;j<tris.length;j++)if(pointInCircumcircle(pts[i],tris[j],pts))bad.push(j);
+   const edges=[];
+   for(let k=bad.length-1;k>=0;k--){const t=tris[bad[k]],te=[[t.a,t.b],[t.b,t.c],[t.c,t.a]];te.forEach(e=>{const idx=edges.findIndex(q=>q[0]===e[1]&&q[1]===e[0]);if(idx>=0)edges.splice(idx,1);else edges.push(e)});tris.splice(bad[k],1);}
+   edges.forEach(e=>tris.push({a:e[0],b:e[1],c:i}));
+ }
+ return tris.filter(t=>t.a<points.length&&t.b<points.length&&t.c<points.length);
+}
+
+function edgeContourIntersection(p1,p2,level){
+ const z1=p1.z,z2=p2.z,eps=1e-10;
+ if(Math.abs(z1-z2)<eps)return null;
+ const crosses=(z1<level&&z2>=level)||(z2<level&&z1>=level);
+ if(!crosses)return null;
+ const t=(level-z1)/(z2-z1);
+ if(t<-eps||t>1+eps)return null;
+ return{x:p1.x+t*(p2.x-p1.x),y:p1.y+t*(p2.y-p1.y)};
+}
+function triangleContourSegment(a,b,c,level){
+ const ints=[];[[a,b],[b,c],[c,a]].forEach(e=>{const q=edgeContourIntersection(e[0],e[1],level);if(q&&!ints.some(r=>Math.hypot(r.x-q.x,r.y-q.y)<1e-8))ints.push(q)});
+ if(ints.length===2)return[ints[0],ints[1]];
+ // If contour passes exactly through one triangle vertex, choose the farthest valid pair.
+ if(ints.length>2){let best=null,bd=-1;for(let i=0;i<ints.length;i++)for(let j=i+1;j<ints.length;j++){const d=Math.hypot(ints[i].x-ints[j].x,ints[i].y-ints[j].y);if(d>bd){bd=d;best=[ints[i],ints[j]]}}return best;}
+ return null;
+}
+function generateContours(){
+ const m=document.getElementById('topoMessage');const interval=parseFloat(document.getElementById('contourInterval').value);
+ if(topoPts.length<3){m.textContent='Plot at least 3 survey points first.';m.className='message bad';return;}
+ if(!(interval>0)){m.textContent='Contour interval must be greater than zero.';m.className='message bad';return;}
+ const local=topoPts.map(p=>({x:p.E-station.E,y:p.N-station.N,z:p.RL,id:p.id}));
+ tinTriangles=delaunay(local);
+ if(!tinTriangles.length){m.textContent='The points cannot form a surface. Make sure at least 3 points are not on one straight line.';m.className='message bad';return;}
+ const minZ=Math.min(...local.map(p=>p.z)),maxZ=Math.max(...local.map(p=>p.z));
+ if(Math.abs(maxZ-minZ)<1e-9){m.textContent='All elevations are the same, so no contour lines can be formed.';m.className='message bad';return;}
+ contourSegments=[];
+ const start=Math.ceil((minZ+1e-9)/interval)*interval;const end=Math.floor((maxZ-1e-9)/interval)*interval;
+ for(let level=start;level<=end+1e-9;level+=interval){
+   const cleanLevel=Number(level.toFixed(10));
+   tinTriangles.forEach(t=>{const seg=triangleContourSegment(local[t.a],local[t.b],local[t.c],cleanLevel);if(seg)contourSegments.push({level:cleanLevel,a:seg[0],b:seg[1]});});
+ }
+ contoursVisible=true;drawTopo();addScore(20);
+ const levels=[...new Set(contourSegments.map(s=>s.level))];
+ m.innerHTML=`Contours generated using a <b>Delaunay TIN</b> and linear elevation interpolation. ${tinTriangles.length} triangles were formed and ${levels.length} contour level${levels.length===1?'':'s'} drawn from ${minZ.toFixed(2)} m to ${maxZ.toFixed(2)} m.`;
+ m.className='message good';
+}
+
+function getTopoTransform(c){
+ const all=[{E:station.E,N:station.N},...topoPts];let minE=Math.min(...all.map(p=>p.E)),maxE=Math.max(...all.map(p=>p.E)),minN=Math.min(...all.map(p=>p.N)),maxN=Math.max(...all.map(p=>p.N));
+ if(maxE-minE<20){minE-=10;maxE+=10}if(maxN-minN<20){minN-=10;maxN+=10}
+ const pad=55,spanE=maxE-minE,spanN=maxN-minN,scale=Math.min((c.width-2*pad)/spanE,(c.height-2*pad)/spanN,6);const midE=(minE+maxE)/2,midN=(minN+maxN)/2;
+ return{scale,cx:c.width/2,cy:c.height/2,midE,midN,toPx:(E,N)=>({x:c.width/2+(E-midE)*scale,y:c.height/2-(N-midN)*scale})};
+}
+function drawTopo(){
+ const c=document.getElementById('topoCanvas'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.fillStyle='#0a0f14';x.fillRect(0,0,c.width,c.height);
+ const tr=getTopoTransform(c);
+ // CAD-style background grid
+ x.strokeStyle='#26313d';x.lineWidth=1;for(let i=0;i<c.width;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,c.height);x.stroke()}for(let j=0;j<c.height;j+=40){x.beginPath();x.moveTo(0,j);x.lineTo(c.width,j);x.stroke()}
+ // TIN edges, faint, when contours shown
+ if(contoursVisible&&tinTriangles.length){x.strokeStyle='rgba(130,145,160,.28)';x.lineWidth=1;const lp=topoPts.map(p=>({E:p.E,N:p.N}));tinTriangles.forEach(t=>{const a=tr.toPx(lp[t.a].E,lp[t.a].N),b=tr.toPx(lp[t.b].E,lp[t.b].N),d=tr.toPx(lp[t.c].E,lp[t.c].N);x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.lineTo(d.x,d.y);x.closePath();x.stroke();});}
+ // Contours (exact linear segments from the TIN)
+ if(contoursVisible&&contourSegments.length){x.strokeStyle='#ffa94d';x.fillStyle='#ffd8a8';x.lineWidth=2;const labeled=new Set();contourSegments.forEach(s=>{const a=tr.toPx(station.E+s.a.x,station.N+s.a.y),b=tr.toPx(station.E+s.b.x,station.N+s.b.y);x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();const key=s.level.toFixed(6);if(!labeled.has(key)){labeled.add(key);const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;x.font='11px Arial';x.fillText(`${s.level.toFixed(2)} m`,mx+4,my-4);}});}
+ // Station
+ const sxy=tr.toPx(station.E,station.N);x.fillStyle='#4dabf7';x.beginPath();x.arc(sxy.x,sxy.y,8,0,Math.PI*2);x.fill();x.fillStyle='#edf2f7';x.font='13px Arial';x.fillText('TS1',sxy.x+11,sxy.y-10);
+ // Survey rays + points + heights
+ topoPts.forEach(p=>{const q=tr.toPx(p.E,p.N);x.strokeStyle='rgba(85,98,112,.38)';x.lineWidth=1;x.beginPath();x.moveTo(sxy.x,sxy.y);x.lineTo(q.x,q.y);x.stroke();x.fillStyle='#51cf66';x.beginPath();x.arc(q.x,q.y,5.5,0,Math.PI*2);x.fill();x.fillStyle='#edf2f7';x.font='12px Arial';x.fillText(`P${p.id}`,q.x+8,q.y-7);x.fillStyle='#ffd43b';x.font='11px Arial';x.fillText(`RL ${p.RL.toFixed(2)} m`,q.x+8,q.y+9);});
+ // North arrow
+ x.strokeStyle='#edf2f7';x.fillStyle='#edf2f7';x.lineWidth=2;x.beginPath();x.moveTo(c.width-35,55);x.lineTo(c.width-35,20);x.stroke();x.beginPath();x.moveTo(c.width-35,18);x.lineTo(c.width-41,29);x.lineTo(c.width-29,29);x.closePath();x.fill();x.font='12px Arial';x.fillText('N',c.width-39,70);
+}
+
+// ----- TRAVERSING: OPEN + CLOSED -----
+let travMode='open';
+let travLegs=[];
+let travAdjusted=null;
+const travStart={E:1000,N:1000,name:'A'};
+function stationName(i){const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';return i<letters.length?letters[i]:'P'+(i+1);}
+function setTraverseMode(mode){
+ travMode=mode;travLegs=[];travAdjusted=null;
+ document.getElementById('openBtn').classList.toggle('active',mode==='open');
+ document.getElementById('closedBtn').classList.toggle('active',mode==='closed');
+ document.getElementById('closureTools').style.display=mode==='closed'?'block':'none';
+ const concept=document.getElementById('travConcept');
+ concept.innerHTML=mode==='open'?'<b class="blueText">OPEN TRAVERSE</b><br>Starts from a known station and continues to new stations without returning to the start or another known closing control. It is useful for route-type work, but the traverse itself does <b>not provide a geometric closure check</b>.':'<b class="greenText">CLOSED TRAVERSE</b><br>A closed-loop traverse returns to its starting control. Ideally, <b>ΣΔE = 0</b> and <b>ΣΔN = 0</b>. Small observational errors produce a linear misclosure that can be checked and adjusted.';
+ document.getElementById('travClosureSummary').innerHTML=mode==='closed'?'<div class="tip">Add traverse legs or load the practice example, then press <b>Check Closure</b>.</div>':'';
+ const m=document.getElementById('travMessage');m.className='message';m.textContent=mode==='open'?'Open traverse selected. Plot the route station by station.':'Closed traverse selected. Plot a loop that should return to Station A.';
+ renderTraverseTable();updateTraverseSummary();drawTraverse();
+}
+function resetTraverse(){travLegs=[];travAdjusted=null;const m=document.getElementById('travMessage');m.className='message';m.textContent=travMode==='open'?'Start at Station A and enter the first observed line.':'Start at Station A. Add all loop observations, then check the closing error.';if(travMode==='closed')document.getElementById('travClosureSummary').innerHTML='<div class="tip">Closure results will appear here.</div>';renderTraverseTable();updateTraverseSummary();drawTraverse();}
+function getRawTraversePoints(){const pts=[{...travStart}];let E=travStart.E,N=travStart.N;travLegs.forEach((l,i)=>{E+=l.dE;N+=l.dN;pts.push({E,N,name:stationName(i+1)});});return pts;}
+function addTraverseLeg(){const D=parseFloat(document.getElementById('travDist').value),Az=parseFloat(document.getElementById('travAz').value),m=document.getElementById('travMessage');if(!(D>0)||Number.isNaN(Az)||Az<0||Az>=360){m.textContent='Enter a positive distance and an azimuth from 0° to less than 360°.';m.className='message bad';return;}const r=Az*Math.PI/180,dE=D*Math.sin(r),dN=D*Math.cos(r),pts=getRawTraversePoints(),from=pts[pts.length-1],leg={D,Az,dE,dN,from:from.name,to:stationName(travLegs.length+1)};travLegs.push(leg);travAdjusted=null;renderTraverseTable();updateTraverseSummary();drawTraverse();addScore(10);const end=getRawTraversePoints().slice(-1)[0];m.innerHTML=`Line <b>${leg.from}–${leg.to}</b> plotted. ΔE = <b>${dE.toFixed(3)} m</b>, ΔN = <b>${dN.toFixed(3)} m</b>. New coordinates: E ${end.E.toFixed(3)}, N ${end.N.toFixed(3)}.`;m.className='message good';if(travMode==='closed')document.getElementById('travClosureSummary').innerHTML='<div class="tip">Traverse changed. Press <b>Check Closure</b> to recompute the misclosure.</div>';}
+function undoTraverseLeg(){const m=document.getElementById('travMessage');if(!travLegs.length){m.textContent='There is no traverse leg to undo.';m.className='message bad';return;}travLegs.pop();travAdjusted=null;renderTraverseTable();updateTraverseSummary();drawTraverse();m.textContent='Last traverse leg removed.';m.className='message';}
+function loadTraverseExample(){travLegs=[];travAdjusted=null;let raw;if(travMode==='open'){raw=[[52.340,32.5000],[41.280,78.2500],[63.750,121.4000],[47.620,166.8000]];}else{raw=[[64.031242,38.659808],[63.245553,108.434949],[67.082039,206.565051],[76.187731,293.218591]];}raw.forEach((q,i)=>{const D=q[0],Az=q[1],r=Az*Math.PI/180,dE=D*Math.sin(r),dN=D*Math.cos(r);travLegs.push({D,Az,dE,dN,from:stationName(i),to:stationName(i+1)});});renderTraverseTable();updateTraverseSummary();drawTraverse();const m=document.getElementById('travMessage');m.className='message good';m.textContent=travMode==='open'?'Open-traverse practice route loaded. Notice that its final station is intentionally different from Station A.':'Closed-loop practice observations loaded. They contain a small measurement misclosure. Press Check Closure.';if(travMode==='closed')document.getElementById('travClosureSummary').innerHTML='<div class="tip">Practice observations loaded. Press <b>Check Closure</b>.</div>';}
+function renderTraverseTable(){const pts=getRawTraversePoints();document.getElementById('travTable').innerHTML=travLegs.map((l,i)=>{const end=pts[i+1];return `<tr><td><b>${l.from}–${l.to}</b></td><td>${l.D.toFixed(3)}</td><td>${l.Az.toFixed(4)}°</td><td>${signed(l.dE)}</td><td>${signed(l.dN)}</td><td>${end.E.toFixed(3)}</td><td>${end.N.toFixed(3)}</td></tr>`}).join('');}
+function signed(v){return (v>=0?'+':'')+v.toFixed(3);}
+function updateTraverseSummary(){const sumE=travLegs.reduce((s,l)=>s+l.dE,0),sumN=travLegs.reduce((s,l)=>s+l.dN,0),L=travLegs.reduce((s,l)=>s+l.D,0);document.getElementById('travCurrent').textContent=stationName(travLegs.length);document.getElementById('travLength').textContent=L.toFixed(3)+' m';document.getElementById('travSumE').textContent=signed(sumE)+' m';document.getElementById('travSumN').textContent=signed(sumN)+' m';}
+function checkTraverseClosure(){const p=document.getElementById('travClosureSummary'),m=document.getElementById('travMessage');if(travMode!=='closed')return;if(travLegs.length<3){p.innerHTML='<div class="tip redText">A closed traverse needs at least 3 sides.</div>';return;}const sumE=travLegs.reduce((s,l)=>s+l.dE,0),sumN=travLegs.reduce((s,l)=>s+l.dN,0),L=travLegs.reduce((s,l)=>s+l.D,0),mis=Math.hypot(sumE,sumN),ratio=mis>1e-12?L/mis:Infinity,pts=getRawTraversePoints(),end=pts[pts.length-1],direction=(Math.atan2(sumE,sumN)*180/Math.PI+360)%360,precision=Number.isFinite(ratio)?`1 : ${Math.round(ratio).toLocaleString()}`:'Perfect mathematical closure';p.innerHTML=`<div class="checkRow"><span>ΣΔE</span><span>${signed(sumE)} m</span></div><div class="checkRow"><span>ΣΔN</span><span>${signed(sumN)} m</span></div><div class="checkRow"><span>Linear misclosure</span><span>${mis.toFixed(4)} m</span></div><div class="checkRow"><span>Misclosure direction</span><span>${direction.toFixed(4)}°</span></div><div class="checkRow"><span>Total traverse length</span><span>${L.toFixed(3)} m</span></div><div class="checkRow"><span>Relative precision</span><span class="${mis<1e-12?'pass':''}">${precision}</span></div><div class="tip" style="margin-top:7px">Raw endpoint: E ${end.E.toFixed(3)}, N ${end.N.toFixed(3)}. For a closed loop, the theoretical endpoint is the starting control E 1000.000, N 1000.000.</div>`;m.innerHTML=mis<1e-12?'<b>Perfect closure.</b> The mathematical example returns exactly to Station A.':`The loop misses Station A by <b>${mis.toFixed(4)} m</b>. This is the linear misclosure. You can now apply the Bowditch adjustment.`;m.className='message good';addScore(20);}
+function applyBowditch(){const p=document.getElementById('travClosureSummary'),m=document.getElementById('travMessage');if(travMode!=='closed'||travLegs.length<3){m.textContent='Use Closed Traverse mode and add at least 3 sides first.';m.className='message bad';return;}const sumE=travLegs.reduce((s,l)=>s+l.dE,0),sumN=travLegs.reduce((s,l)=>s+l.dN,0),L=travLegs.reduce((s,l)=>s+l.D,0);if(!(L>0))return;let E=travStart.E,N=travStart.N;const adjustedPts=[{...travStart}];const adjustedLegs=travLegs.map(l=>{const cE=-sumE*(l.D/L),cN=-sumN*(l.D/L),adjE=l.dE+cE,adjN=l.dN+cN;E+=adjE;N+=adjN;adjustedPts.push({E,N});return {...l,cE,cN,adjE,adjN};});travAdjusted={legs:adjustedLegs,points:adjustedPts};const checkE=adjustedLegs.reduce((s,l)=>s+l.adjE,0),checkN=adjustedLegs.reduce((s,l)=>s+l.adjN,0);p.innerHTML+=`<hr style="border:0;border-top:1px solid #34404e;margin:10px 0"><div class="tip"><b>Bowditch adjustment applied</b></div><div class="checkRow"><span>Adjusted ΣΔE</span><span class="pass">${checkE.toFixed(6)} m</span></div><div class="checkRow"><span>Adjusted ΣΔN</span><span class="pass">${checkN.toFixed(6)} m</span></div><div class="tip" style="margin-top:7px">Correction per line: cE = −fE × (Li / ΣL), cN = −fN × (Li / ΣL). The yellow traverse is the adjusted coordinate solution.</div>`;m.textContent='Bowditch corrections distributed according to line length. The adjusted traverse now closes on Station A.';m.className='message good';drawTraverse();addScore(25);}
+function getTraverseTransform(c,rawPts,adjPts){const all=[...rawPts,...(adjPts||[])];let minE=Math.min(...all.map(p=>p.E)),maxE=Math.max(...all.map(p=>p.E)),minN=Math.min(...all.map(p=>p.N)),maxN=Math.max(...all.map(p=>p.N));if(maxE-minE<20){minE-=10;maxE+=10}if(maxN-minN<20){minN-=10;maxN+=10}const pad=60,scale=Math.min((c.width-2*pad)/(maxE-minE),(c.height-2*pad)/(maxN-minN),7),midE=(minE+maxE)/2,midN=(minN+maxN)/2;return{toPx:(E,N)=>({x:c.width/2+(E-midE)*scale,y:c.height/2-(N-midN)*scale})};}
+function drawTraverse(){const c=document.getElementById('travCanvas');if(!c)return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.fillStyle='#0a0f14';x.fillRect(0,0,c.width,c.height);x.strokeStyle='#26313d';x.lineWidth=1;for(let i=0;i<c.width;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,c.height);x.stroke()}for(let j=0;j<c.height;j+=40){x.beginPath();x.moveTo(0,j);x.lineTo(c.width,j);x.stroke()}const raw=getRawTraversePoints(),adj=travAdjusted?travAdjusted.points:null,tr=getTraverseTransform(c,raw,adj);if(raw.length>1){x.strokeStyle='#edf2f7';x.lineWidth=2.5;x.beginPath();raw.forEach((p,i)=>{const q=tr.toPx(p.E,p.N);if(i===0)x.moveTo(q.x,q.y);else x.lineTo(q.x,q.y)});x.stroke()}raw.forEach((p,i)=>{const q=tr.toPx(p.E,p.N);x.fillStyle=i===0?'#4dabf7':'#51cf66';x.beginPath();x.arc(q.x,q.y,i===0?7:5.5,0,Math.PI*2);x.fill();x.fillStyle='#edf2f7';x.font='12px Arial';x.fillText(i===0?'A / START':stationName(i),q.x+9,q.y-8)});if(travMode==='closed'&&raw.length>1){const s=tr.toPx(travStart.E,travStart.N),e=tr.toPx(raw[raw.length-1].E,raw[raw.length-1].N);x.save();x.setLineDash([6,5]);x.strokeStyle='#ff6b6b';x.lineWidth=2;x.beginPath();x.moveTo(e.x,e.y);x.lineTo(s.x,s.y);x.stroke();x.restore()}if(adj&&adj.length>1){x.strokeStyle='#ffd43b';x.lineWidth=3;x.beginPath();adj.forEach((p,i)=>{const q=tr.toPx(p.E,p.N);if(i===0)x.moveTo(q.x,q.y);else x.lineTo(q.x,q.y)});x.stroke();adj.slice(1).forEach(p=>{const q=tr.toPx(p.E,p.N);x.strokeStyle='#ffd43b';x.lineWidth=2;x.beginPath();x.arc(q.x,q.y,8,0,Math.PI*2);x.stroke()})}x.strokeStyle='#edf2f7';x.fillStyle='#edf2f7';x.lineWidth=2;x.beginPath();x.moveTo(c.width-35,55);x.lineTo(c.width-35,20);x.stroke();x.beginPath();x.moveTo(c.width-35,18);x.lineTo(c.width-41,29);x.lineTo(c.width-29,29);x.closePath();x.fill();x.font='12px Arial';x.fillText('N',c.width-39,70);x.fillStyle='#9ba8b6';x.fillText(travMode==='open'?'OPEN TRAVERSE — no loop closure required':'CLOSED TRAVERSE — red dashed line shows closing error',18,24);}
+
+document.getElementById('levInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkLevelling();});
+
+resetLevelling();resetTopo();setTraverseMode('open');
+</script>
+</body>
+</html>
