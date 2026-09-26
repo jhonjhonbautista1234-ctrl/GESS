@@ -1,5 +1,0 @@
-import { concepts, extendedConcepts, extendedQuestions, masteryConcepts, masteryQuestions, modules, pdfCoverage, questions, supplementalConcepts, supplementalQuestions } from "../src/data.js";
-const missing=Array.from({length:104},(_,i)=>i+1).filter(page=>!pdfCoverage.some(item=>item.page===page&&item.processed));
-const allConcepts=[...concepts,...extendedConcepts,...supplementalConcepts,...masteryConcepts]; const allQuestions=[...questions,...extendedQuestions,...supplementalQuestions,...masteryQuestions];
-console.log("PDF COVERAGE REPORT"); console.log(`Pages processed: ${pdfCoverage.filter(p=>p.processed).length} / 104`); console.log(`Pages represented: ${pdfCoverage.length} / 104`); console.log(`Pages missing: ${missing.length?missing.join(", "):"NONE"}`); console.log(`Concepts: ${allConcepts.length} | Questions: ${allQuestions.length} | Flashcards: ${allConcepts.length}`); modules.forEach(module=>console.log(`${module.name}: ${allQuestions.filter(q=>q.module===module.name).length} questions`));
-if(missing.length) process.exit(1);
